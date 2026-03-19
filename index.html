@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Baby Book">
+<meta name="theme-color" content="#fdf6f0">
+<title>Baby Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║  FIREBASE CONFIG — replace with your project values  ║
+     ║  1. console.firebase.google.com → New project        ║
+     ║  2. Add web app → copy config below                  ║
+     ║  3. Build → Realtime Database → Create → Test mode   ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+  apiKey: "AIzaSyBX7n9lzWrkab9IK-ZrLnbUQLpviB0h4k4",
+  authDomain: "baby-tracker-69d38.firebaseapp.com",
+  projectId: "baby-tracker-69d38",
+  storageBucket: "baby-tracker-69d38.firebasestorage.app",
+  messagingSenderId: "257272432835",
+  appId: "1:257272432835:web:9f2aad216490681b3eba76",
+  measurementId: "G-N3FZXFEPN4"
+};
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+    window._db=db; window._ref=ref; window._set=set; window._onValue=onValue; window._remove=remove;
+    window._fbReady=true;
+    document.dispatchEvent(new Event('fb-ready'));
+  } catch(e) { console.warn('Firebase not configured:', e.message); }
+</script>
+
+<style>
+:root {
+  --cream:#fdf6f0; --cream2:#faeee4; --cream3:#f5e4d6; --white:#ffffff;
+  --border:#edd8c8; --border2:#e4c9b4;
+  --rose:#e8637a; --rose2:#f28a9b; --rose-lt:#fdeef1; --rose-mid:#fad3da;
+  --sage:#6baa8e; --sage-lt:#edf7f2;
+  --sky:#5a9fd4; --sky-lt:#eaf4fb;
+  --maize:#e8a93c; --maize-lt:#fef6e4;
+  --plum:#9b72b0; --plum-lt:#f3eef8;
+  --coral:#f07050; --coral-lt:#fef0ec;
+  --text:#2a1a12; --text2:#7a5a4a; --text3:#b89080; --text4:#d4b8ac;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --sh:0 2px 16px rgba(160,100,70,.09); --sh-lg:0 8px 32px rgba(160,100,70,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;}
+
+/* LOCK */
+#lock{position:fixed;inset:0;background:var(--cream);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;}
+.lock-icon{font-size:56px;margin-bottom:16px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.lock-title{font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.lock-sub{font-size:14px;color:var(--text3);margin-bottom:28px;line-height:1.5;}
+.lock-dots{display:flex;gap:14px;justify-content:center;margin-bottom:22px;}
+.ld{width:16px;height:16px;border-radius:50%;border:2px solid var(--border2);background:var(--cream2);transition:all .2s;}
+.ld.on{background:var(--rose);border-color:var(--rose);transform:scale(1.1);}
+.lock-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:280px;width:100%;}
+.lk{aspect-ratio:1;border-radius:50%;background:var(--white);border:2px solid var(--border);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--text);user-select:none;}
+.lk:active{transform:scale(.92);background:var(--rose-mid);border-color:var(--rose2);}
+.lk.zero{grid-column:2;}.lk.del{background:none;border-color:transparent;box-shadow:none;font-size:20px;}
+.lock-err{color:var(--rose);font-size:13px;font-weight:600;min-height:20px;margin-top:8px;}
+.lock-hint{font-size:12px;color:var(--text4);margin-top:14px;}
+.lock-setup-btn{margin-top:10px;background:none;border:1.5px solid var(--border2);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* CG SCREEN */
+#cg-scr{position:fixed;inset:0;background:var(--cream);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;}
+.cg-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:6px;text-align:center;}
+.cg-sub{font-size:13px;color:var(--text3);margin-bottom:26px;text-align:center;}
+.cg-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:360px;margin-bottom:20px;}
+.cg-chip{padding:11px 20px;border-radius:24px;border:2px solid var(--border2);background:var(--white);font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .18s;box-shadow:var(--sh);}
+.cg-chip:active,.cg-chip.sel{background:var(--rose);color:#fff;border-color:var(--rose);}
+
+/* APP */
+#app{display:none;flex-direction:column;height:100%;height:100dvh;}
+
+/* HEADER */
+#hdr{padding:13px 16px 9px;background:var(--white);border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 10px rgba(160,100,70,.06);}
+#hdr-left{display:flex;align-items:center;gap:10px;}
+#hdr-emoji{font-size:28px;}
+#hdr-name{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--rose);letter-spacing:-.3px;line-height:1;}
+#hdr-sub{font-size:10px;color:var(--text3);font-weight:500;margin-top:1px;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+#cg-pill{background:var(--rose-lt);border:1.5px solid var(--rose-mid);border-radius:18px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--rose);cursor:pointer;display:flex;align-items:center;gap:4px;}
+#sdot{width:7px;height:7px;border-radius:50%;background:var(--text4);transition:background .4s;flex-shrink:0;}
+#sdot.live{background:var(--sage);}#sdot.saving{background:var(--maize);animation:pulse 1s infinite;}#sdot.error{background:var(--rose);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* CONTENT & NAV */
+#content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+#content::-webkit-scrollbar{display:none;}
+#nav{display:flex;background:var(--white);border-top:1.5px solid var(--border);padding:5px 0;padding-bottom:max(5px,env(safe-area-inset-bottom));flex-shrink:0;box-shadow:0 -1px 10px rgba(160,100,70,.06);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--text4);cursor:pointer;padding:3px 0;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;transition:color .2s;font-family:'DM Sans',sans-serif;}
+.nb .ni{font-size:19px;line-height:1;}
+.nb.active{color:var(--rose);}
+
+/* PAGES */
+.page{display:none;padding:14px;min-height:100%;}
+.page.active{display:block;}
+
+/* SECTION LABEL */
+.sl{font-family:'Fraunces',serif;font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin:16px 0 8px 2px;}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--r-lg);border:1.5px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh);}
+.ch{padding:13px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
+.ct{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);}
+.cb{padding:0 16px 14px;}
+
+/* QUICK GRID */
+.qg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
+.qb{border-radius:var(--r-md);padding:13px 6px 10px;text-align:center;cursor:pointer;transition:all .18s;border:1.5px solid var(--border);background:var(--white);box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:4px;}
+.qb:active{transform:scale(.94);box-shadow:none;}
+.qi{font-size:26px;line-height:1;}.ql{font-size:11px;font-weight:600;color:var(--text);line-height:1.2;}.qs{font-size:9.5px;color:var(--text3);}
+.qb.feed{background:var(--rose-lt);border-color:var(--rose-mid);}
+.qb.diap{background:var(--sage-lt);border-color:#b2dfc9;}
+.qb.slp{background:var(--plum-lt);border-color:#cbb8dc;}
+.qb.hlth{background:var(--sky-lt);border-color:#a8d4ee;}
+.qb.grow{background:var(--maize-lt);border-color:#f0d090;}
+.qb.meds{background:var(--coral-lt);border-color:#f6b8a8;}
+
+/* ACTIVITY */
+.ae{display:flex;align-items:flex-start;gap:11px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s;}
+.ae:last-child{border-bottom:none;}
+.ae:active{background:var(--cream);}
+.adot{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;margin-top:1px;}
+.ai{flex:1;min-width:0;}
+.at{font-weight:600;font-size:13.5px;color:var(--text);}
+.am{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
+.atime{font-size:10.5px;color:var(--text3);flex-shrink:0;font-weight:600;}
+.xb{font-size:15px;color:var(--text4);padding:2px 5px;cursor:pointer;flex-shrink:0;}
+.xb:active{color:var(--rose);}
+
+/* STAT CHIP */
+.sc{background:var(--cream2);border:1.5px solid var(--border2);border-radius:18px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:4px;}
+
+/* MODALS */
+.ov{position:fixed;inset:0;background:rgba(42,26,18,.38);backdrop-filter:blur(6px);z-index:100;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .28s;}
+.ov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--white);border-radius:26px 26px 0 0;border-top:1.5px solid var(--border);max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .32s cubic-bezier(.34,1.56,.64,1);padding-bottom:max(20px,env(safe-area-inset-bottom));}
+.ov.open .modal{transform:translateY(0);}
+.mh{width:38px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 8px;}
+.mt{font-family:'Fraunces',serif;font-size:21px;font-weight:700;padding:0 20px 14px;color:var(--rose);}
+
+/* INPUTS */
+.ig{padding:0 20px;margin-bottom:13px;}
+.il{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+.ifield{width:100%;background:var(--cream);border:1.5px solid var(--border2);border-radius:var(--r-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14.5px;padding:11px 13px;outline:none;appearance:none;transition:border-color .2s;}
+.ifield:focus{border-color:var(--rose);}
+.ifield::placeholder{color:var(--text4);}
+textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
+
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-sm);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .18s;}
+.btn:active{transform:scale(.97);}
+.btn-p{background:var(--rose);color:#fff;font-size:15px;padding:13px 20px;width:100%;box-shadow:0 4px 14px rgba(232,99,122,.32);}
+.btn-s{background:var(--cream2);color:var(--text2);font-size:13px;padding:10px 14px;border:1.5px solid var(--border2);}
+.btn-d{background:var(--rose-lt);color:var(--rose);font-size:12px;padding:8px 13px;border:1.5px solid var(--rose-mid);}
+.brow{display:flex;gap:9px;padding:0 20px;margin-bottom:13px;}
+
+/* PILLS */
+.pr{display:flex;gap:6px;flex-wrap:wrap;padding:0 20px;margin-bottom:13px;}
+.pill{padding:7px 13px;border-radius:18px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--cream2);color:var(--text2);transition:all .16s;font-family:'DM Sans',sans-serif;}
+.pill.on{background:var(--rose);color:#fff;border-color:var(--rose);}
+
+/* CALENDAR */
+.ccell{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid transparent;font-size:12px;font-weight:600;transition:all .15s;color:var(--text3);}
+.ccell.has{background:var(--rose-lt);border-color:var(--rose-mid);color:var(--text);}
+.ccell.tod{border-color:var(--rose)!important;color:var(--rose);font-weight:700;}
+.ccell.sel{background:var(--rose)!important;border-color:var(--rose)!important;color:#fff!important;}
+.ccell.fut{opacity:.3;cursor:default;}
+.ccell.emp{cursor:default;}
+.cdot{width:4px;height:4px;border-radius:50%;background:var(--rose);margin-top:2px;}
+.ccell.sel .cdot{background:rgba(255,255,255,.7);}
+
+/* INFO PAGE */
+.irow{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);gap:12px;}
+.irow:last-child{border-bottom:none;}
+.ikey{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;width:100px;margin-top:1px;}
+.ival{font-size:13.5px;color:var(--text);font-weight:500;flex:1;word-break:break-word;}
+.ival.blr{filter:blur(5px);user-select:none;cursor:pointer;}
+.revbtn{font-size:11px;color:var(--rose);font-weight:600;cursor:pointer;padding:3px 8px;border:1px solid var(--rose-mid);border-radius:10px;flex-shrink:0;background:var(--rose-lt);}
+
+/* HEALTH RECORDS */
+.hrec{padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s;}
+.hrec:last-child{border-bottom:none;}
+.hrec-t{font-weight:600;font-size:13.5px;color:var(--text);}
+.hrec-s{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* MILESTONES */
+.msrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.msrow:last-child{border-bottom:none;}
+.mschk{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.mschk.done{background:var(--sage);border-color:var(--sage);color:#fff;}
+.mslbl{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+.msage{font-size:11px;color:var(--text3);flex-shrink:0;}
+.msdt{font-size:10.5px;color:var(--sage);font-weight:600;flex-shrink:0;}
+
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:13px;}
+
+/* BANNER */
+.fb-banner{background:var(--maize-lt);border:1.5px solid #f0d090;border-radius:var(--r-sm);padding:10px 13px;font-size:11.5px;color:#8a6010;line-height:1.5;margin-bottom:12px;}
+
+/* EMPTY */
+.empty{text-align:center;padding:24px 16px;}
+.ei{font-size:36px;margin-bottom:8px;}
+.et{font-size:13px;color:var(--text3);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- ══ LOCK SCREEN ══ -->
+<div id="lock">
+  <div class="lock-icon">👶</div>
+  <div class="lock-title" id="ltitle">Baby Book</div>
+  <div class="lock-sub" id="lsub">Enter your PIN to continue</div>
+  <div class="lock-dots"><div class="ld" id="ld0"></div><div class="ld" id="ld1"></div><div class="ld" id="ld2"></div><div class="ld" id="ld3"></div></div>
+  <div class="lock-pad">
+    <div class="lk" onclick="lk('1')">1</div><div class="lk" onclick="lk('2')">2</div><div class="lk" onclick="lk('3')">3</div>
+    <div class="lk" onclick="lk('4')">4</div><div class="lk" onclick="lk('5')">5</div><div class="lk" onclick="lk('6')">6</div>
+    <div class="lk" onclick="lk('7')">7</div><div class="lk" onclick="lk('8')">8</div><div class="lk" onclick="lk('9')">9</div>
+    <div class="lk zero" onclick="lk('0')">0</div><div class="lk del" onclick="lkb()">⌫</div>
+  </div>
+  <div class="lock-err" id="lerr"></div>
+  <div class="lock-hint" id="lhint"></div>
+  <button class="lock-setup-btn" id="lsetupbtn" onclick="startSetup()" style="display:none;">Set up PIN</button>
+</div>
+
+<!-- ══ CAREGIVER SCREEN ══ -->
+<div id="cg-scr">
+  <div style="font-size:48px;margin-bottom:12px;">👋</div>
+  <div class="cg-title">Who's caring today?</div>
+  <div class="cg-sub">Tap your name — it'll be remembered next time</div>
+  <div class="cg-grid" id="cg-grid"></div>
+  <div style="width:100%;max-width:340px;">
+    <div style="text-align:center;font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;">Or add your name</div>
+    <div style="display:flex;gap:8px;">
+      <input class="ifield" type="text" id="cg-inp" placeholder="Enter name…" style="flex:1;">
+      <button class="btn btn-p" onclick="cgAddNew()" style="width:auto;padding:11px 14px;flex-shrink:0;">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <div id="hdr">
+    <div id="hdr-left"><div id="hdr-emoji">👶</div><div><div id="hdr-name">Baby Book</div><div id="hdr-sub">Family Tracker</div></div></div>
+    <div class="hdr-r"><div id="cg-pill" onclick="switchCG()"><span id="cgbadge">–</span> ✏️</div><div id="sdot"></div></div>
+  </div>
+
+  <div id="content">
+
+    <!-- TODAY -->
+    <div class="page active" id="pg-today">
+      <div id="demo-banner" class="fb-banner" style="display:none;">⚠️ <strong>Demo mode</strong> — data stays on this device. Add Firebase config to share with caregivers.</div>
+      <div class="sl">Quick Log</div>
+      <div class="qg">
+        <div class="qb feed" onclick="openM('m-feed')"><div class="qi">🍼</div><div class="ql">Feeding</div><div class="qs" id="qs-feed">Tap to log</div></div>
+        <div class="qb diap" onclick="openM('m-diap')"><div class="qi">🚼</div><div class="ql">Diaper</div><div class="qs" id="qs-diap">Tap to log</div></div>
+        <div class="qb slp" onclick="openM('m-slp')"><div class="qi">😴</div><div class="ql">Sleep</div><div class="qs" id="qs-slp">Tap to log</div></div>
+        <div class="qb hlth" onclick="openM('m-hlth')"><div class="qi">🌡️</div><div class="ql">Health</div><div class="qs">Symptom/Temp</div></div>
+        <div class="qb grow" onclick="openM('m-grow')"><div class="qi">📏</div><div class="ql">Growth</div><div class="qs">Weight/Height</div></div>
+        <div class="qb meds" onclick="openM('m-meds')"><div class="qi">💊</div><div class="ql">Medicine</div><div class="qs" id="qs-meds">Tap to log</div></div>
+        <div class="qb" style="grid-column:1/-1;flex-direction:row;gap:10px;justify-content:flex-start;padding:11px 16px;background:#f0faf4;border-color:#aadec0;" onclick="openM('m-motor')">
+          <div class="qi">🌟</div><div style="text-align:left;"><div class="ql">Log Motor Milestone</div><div class="qs">Record an achievement!</div></div>
+        </div>
+      </div>
+      <div class="sl">Today's Summary</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;" id="today-stats"></div>
+      <div class="sl">Activity Feed</div>
+      <div class="card"><div id="feed"></div></div>
+      <div style="height:80px;"></div>
+    </div>
+
+    <!-- HEALTH PAGE -->
+    <div class="page" id="pg-health">
+      <div class="sl">Vaccinations</div>
+      <div class="card">
+        <div class="ch"><div class="ct">💉 Vaccine Records</div><button class="btn btn-s" onclick="openM('m-vacc')" style="font-size:12px;padding:6px 11px;">+ Add</button></div>
+        <div id="vacc-list"><div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">💉</div><div class="et">No vaccines recorded yet.</div></div></div>
+      </div>
+      <div class="sl">Doctor Visits</div>
+      <div class="card">
+        <div class="ch"><div class="ct">🏥 Visit Log</div><button class="btn btn-s" onclick="openM('m-visit')" style="font-size:12px;padding:6px 11px;">+ Add</button></div>
+        <div id="visit-list"><div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">🏥</div><div class="et">No visits recorded yet.</div></div></div>
+      </div>
+      <div class="sl">Medication History</div>
+      <div class="card">
+        <div class="ch"><div class="ct">💊 Med History</div><button class="btn btn-s" onclick="openM('m-mhist')" style="font-size:12px;padding:6px 11px;">+ Add</button></div>
+        <div id="mhist-list"><div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">💊</div><div class="et">No medications recorded yet.</div></div></div>
+      </div>
+      <div style="height:80px;"></div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div class="page" id="pg-motor">
+      <div class="sl">Logged Achievements</div>
+      <div class="card">
+        <div class="ch"><div class="ct">🌟 My Milestones</div><button class="btn btn-s" onclick="openM('m-motor')" style="font-size:12px;padding:6px 11px;">+ Log</button></div>
+        <div id="motor-list"><div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">🌟</div><div class="et">No milestones logged yet.</div></div></div>
+      </div>
+      <div class="sl">Developmental Checklist</div>
+      <div id="ms-checklist"></div>
+      <div style="height:80px;"></div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="page" id="pg-hist">
+      <div class="card" style="margin-bottom:12px;">
+        <div class="cb" style="padding:12px 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <button class="btn btn-s" onclick="hPrev()" style="padding:7px 12px;font-size:16px;">‹</button>
+            <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text);" id="h-month"></div>
+            <button class="btn btn-s" onclick="hNext()" style="padding:7px 12px;font-size:16px;" id="h-next">›</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
+            ${['S','M','T','W','T','F','S'].map(d=>`<div style="text-align:center;font-size:9px;font-weight:700;color:var(--text3);padding:2px 0;">${d}</div>`).join('')}
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;" id="h-cal"></div>
+        </div>
+      </div>
+      <div id="h-detail"></div>
+      <div style="height:80px;"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="page" id="pg-info">
+      <div class="sl">Baby Profile</div>
+      <div class="card"><div class="ch"><div class="ct">👶 General Info</div><button class="btn btn-s" onclick="openM('m-info')" style="font-size:12px;padding:6px 11px;">Edit</button></div><div class="cb" id="info-disp"></div></div>
+      <div class="sl">Birth Information</div>
+      <div class="card"><div class="ch"><div class="ct">🏥 Birth Details</div><button class="btn btn-s" onclick="openM('m-birth')" style="font-size:12px;padding:6px 11px;">Edit</button></div><div class="cb" id="birth-disp"></div></div>
+      <div class="sl">Allergies & Conditions</div>
+      <div class="card"><div class="ch"><div class="ct">⚠️ Medical Alerts</div><button class="btn btn-s" onclick="openM('m-mdalerts')" style="font-size:12px;padding:6px 11px;">Edit</button></div><div class="cb" id="mdalerts-disp"></div></div>
+      <div class="sl">Growth History</div>
+      <div class="card"><div class="ch"><div class="ct">📏 Measurements</div><button class="btn btn-s" onclick="openM('m-grow')" style="font-size:12px;padding:6px 11px;">+ Add</button></div><div id="growth-list"><div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">📏</div><div class="et">No measurements yet.</div></div></div></div>
+      <div class="sl">Caregivers</div>
+      <div class="card"><div class="cb" style="padding-top:14px;"><div id="cg-manage" style="margin-bottom:12px;"></div><div style="display:flex;gap:8px;"><input class="ifield" type="text" id="cg-add-inp" placeholder="Add caregiver…" style="flex:1;"><button class="btn btn-p" onclick="cgAdd()" style="width:auto;padding:11px 14px;">Add</button></div></div></div>
+      <div class="sl">Security</div>
+      <div class="card"><div class="cb" style="padding-top:14px;"><button class="btn btn-s" onclick="changePin()" style="width:100%;margin-bottom:8px;">🔐 Change PIN</button></div></div>
+      <div class="card" style="border-color:#f6b8a8;"><div class="cb" style="padding-top:14px;"><button class="btn btn-d" onclick="clearToday()" style="width:100%;margin-bottom:8px;">Clear Today's Log</button><button class="btn btn-d" onclick="clearAll()" style="width:100%;">Clear All Data</button></div></div>
+      <div style="height:80px;"></div>
+    </div>
+
+  </div><!-- /content -->
+
+  <nav id="nav">
+    <button class="nb active" onclick="showPg('today',this)"><div class="ni">🏠</div>Today</button>
+    <button class="nb" onclick="showPg('health',this)"><div class="ni">🏥</div>Health</button>
+    <button class="nb" onclick="showPg('motor',this)"><div class="ni">🌟</div>Milestones</button>
+    <button class="nb" onclick="showPg('hist',this)"><div class="ni">📅</div>History</button>
+    <button class="nb" onclick="showPg('info',this)"><div class="ni">👶</div>Profile</button>
+  </nav>
+</div><!-- /app -->
+
+<!-- ══ MODALS ══ -->
+
+<div class="ov" id="m-feed"><div class="modal"><div class="mh"></div><div class="mt">🍼 Log Feeding</div>
+  <div class="pr" id="pp-ftype"><div class="pill on" onclick="sp(this,'pp-ftype')">Breast — Left</div><div class="pill" onclick="sp(this,'pp-ftype')">Breast — Right</div><div class="pill" onclick="sp(this,'pp-ftype')">Both Sides</div><div class="pill" onclick="sp(this,'pp-ftype')">Bottle</div><div class="pill" onclick="sp(this,'pp-ftype')">Formula</div><div class="pill" onclick="sp(this,'pp-ftype')">Solids</div></div>
+  <div class="g2"><div><div class="il">Amount / Duration</div><input class="ifield" id="f-amt" placeholder="4 oz or 15 min"></div><div><div class="il">Time</div><input class="ifield" type="time" id="f-time"></div></div>
+  <div class="ig"><div class="il">Notes</div><input class="ifield" id="f-notes" placeholder="e.g. seemed hungry, fussy after"></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('feed')" style="flex:1;">Save Feeding</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-diap"><div class="modal"><div class="mh"></div><div class="mt">🚼 Log Diaper</div>
+  <div class="ig"><div class="il">Type</div></div>
+  <div class="pr" id="pp-dtype"><div class="pill on" onclick="sp(this,'pp-dtype')">Wet</div><div class="pill" onclick="sp(this,'pp-dtype')">Dirty</div><div class="pill" onclick="sp(this,'pp-dtype')">Both</div><div class="pill" onclick="sp(this,'pp-dtype')">Dry</div></div>
+  <div class="ig"><div class="il">Color / Consistency</div></div>
+  <div class="pr" id="pp-dcol"><div class="pill on" onclick="sp(this,'pp-dcol')">Normal</div><div class="pill" onclick="sp(this,'pp-dcol')">Yellow</div><div class="pill" onclick="sp(this,'pp-dcol')">Green</div><div class="pill" onclick="sp(this,'pp-dcol')">Black/Tarry</div><div class="pill" onclick="sp(this,'pp-dcol')">Bloody</div><div class="pill" onclick="sp(this,'pp-dcol')">Unusual</div></div>
+  <div class="g2"><div><div class="il">Time</div><input class="ifield" type="time" id="d-time"></div><div><div class="il">Notes</div><input class="ifield" id="d-notes" placeholder="e.g. rash noticed"></div></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('diap')" style="flex:1;">Save Diaper</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-slp"><div class="modal"><div class="mh"></div><div class="mt">😴 Log Sleep</div>
+  <div class="ig"><div class="il">Type</div></div>
+  <div class="pr" id="pp-stype"><div class="pill on" onclick="sp(this,'pp-stype')">Nap</div><div class="pill" onclick="sp(this,'pp-stype')">Night Sleep</div><div class="pill" onclick="sp(this,'pp-stype')">Woke Up</div></div>
+  <div class="g2"><div><div class="il">Start Time</div><input class="ifield" type="time" id="s-start"></div><div><div class="il">End Time</div><input class="ifield" type="time" id="s-end" placeholder="if done"></div></div>
+  <div class="ig"><div class="il">Location</div></div>
+  <div class="pr" id="pp-sloc"><div class="pill on" onclick="sp(this,'pp-sloc')">Crib</div><div class="pill" onclick="sp(this,'pp-sloc')">Bassinet</div><div class="pill" onclick="sp(this,'pp-sloc')">Car Seat</div><div class="pill" onclick="sp(this,'pp-sloc')">Arms</div><div class="pill" onclick="sp(this,'pp-sloc')">Other</div></div>
+  <div class="ig"><div class="il">Notes</div><input class="ifield" id="s-notes" placeholder="e.g. restless, slept through feed"></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('slp')" style="flex:1;">Save Sleep</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-hlth"><div class="modal"><div class="mh"></div><div class="mt">🌡️ Log Health</div>
+  <div class="g2"><div><div class="il">Temperature (°F)</div><input class="ifield" type="number" id="h-temp" placeholder="98.6" step="0.1"></div><div><div class="il">Time</div><input class="ifield" type="time" id="h-time"></div></div>
+  <div class="ig"><div class="il">Symptoms (select all)</div></div>
+  <div class="pr" id="pp-sym" style="flex-wrap:wrap;">
+    <div class="pill" onclick="tp(this)">Fever</div><div class="pill" onclick="tp(this)">Cough</div><div class="pill" onclick="tp(this)">Runny Nose</div><div class="pill" onclick="tp(this)">Congestion</div><div class="pill" onclick="tp(this)">Vomiting</div><div class="pill" onclick="tp(this)">Diarrhea</div><div class="pill" onclick="tp(this)">Rash</div><div class="pill" onclick="tp(this)">Fussy/Crying</div><div class="pill" onclick="tp(this)">No Appetite</div><div class="pill" onclick="tp(this)">Teething</div><div class="pill" onclick="tp(this)">Eye Discharge</div><div class="pill" onclick="tp(this)">Ear Pulling</div><div class="pill" onclick="tp(this)">Normal/Well</div>
+  </div>
+  <div class="ig"><div class="il">Notes</div><textarea class="ifield" id="h-notes" rows="2" placeholder="Additional observations…"></textarea></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('hlth')" style="flex:1;">Save Health Log</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-grow"><div class="modal"><div class="mh"></div><div class="mt">📏 Log Growth</div>
+  <div class="g2"><div><div class="il">Weight (lbs)</div><input class="ifield" type="number" id="gr-wt" placeholder="8.5" step="0.01"></div><div><div class="il">Height (inches)</div><input class="ifield" type="number" id="gr-ht" placeholder="21.0" step="0.1"></div></div>
+  <div class="g2"><div><div class="il">Head Circ. (in)</div><input class="ifield" type="number" id="gr-hc" placeholder="14.0" step="0.1"></div><div><div class="il">Date</div><input class="ifield" type="date" id="gr-date"></div></div>
+  <div class="ig"><div class="il">Notes</div><input class="ifield" id="gr-notes" placeholder="e.g. 2-month checkup"></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('grow')" style="flex:1;">Save Measurement</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-meds"><div class="modal"><div class="mh"></div><div class="mt">💊 Log Medicine</div>
+  <div class="pr" id="pp-med" style="flex-wrap:wrap;"><div class="pill on" onclick="sp(this,'pp-med')">Tylenol</div><div class="pill" onclick="sp(this,'pp-med')">Motrin</div><div class="pill" onclick="sp(this,'pp-med')">Vitamin D</div><div class="pill" onclick="sp(this,'pp-med')">Iron Drops</div><div class="pill" onclick="sp(this,'pp-med')">Antibiotic</div><div class="pill" onclick="sp(this,'pp-med')">Gripe Water</div><div class="pill" onclick="sp(this,'pp-med')">Gas Drops</div><div class="pill" onclick="sp(this,'pp-med')">Probiotic</div><div class="pill" onclick="sp(this,'pp-med')">Other</div></div>
+  <div class="g2"><div><div class="il">Dose</div><input class="ifield" id="med-dose" placeholder="2.5 mL"></div><div><div class="il">Time</div><input class="ifield" type="time" id="med-time"></div></div>
+  <div class="ig"><div class="il">Notes</div><input class="ifield" id="med-notes" placeholder="e.g. for fever, given after feed"></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('meds')" style="flex:1;">Save Medicine</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-motor"><div class="modal"><div class="mh"></div><div class="mt">🌟 Log Milestone</div>
+  <div class="ig"><div class="il">Milestone Achieved</div><input class="ifield" id="mot-name" placeholder="e.g. First smile, Rolled over, First steps"></div>
+  <div class="ig"><div class="il">Category</div></div>
+  <div class="pr" id="pp-mcat"><div class="pill on" onclick="sp(this,'pp-mcat')">Gross Motor</div><div class="pill" onclick="sp(this,'pp-mcat')">Fine Motor</div><div class="pill" onclick="sp(this,'pp-mcat')">Language</div><div class="pill" onclick="sp(this,'pp-mcat')">Social</div><div class="pill" onclick="sp(this,'pp-mcat')">Cognitive</div><div class="pill" onclick="sp(this,'pp-mcat')">First Ever</div></div>
+  <div class="g2"><div><div class="il">Date Achieved</div><input class="ifield" type="date" id="mot-date"></div><div><div class="il">Baby's Age</div><input class="ifield" id="mot-age" placeholder="e.g. 3 months"></div></div>
+  <div class="ig"><div class="il">Notes / Memory</div><textarea class="ifield" id="mot-notes" placeholder="Describe the moment…"></textarea></div>
+  <div class="brow"><button class="btn btn-p" onclick="log('motor')" style="flex:1;">Save Milestone 🎉</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-vacc"><div class="modal"><div class="mh"></div><div class="mt">💉 Add Vaccination</div>
+  <div class="ig"><div class="il">Vaccine Name</div><input class="ifield" id="v-name" placeholder="e.g. DTaP, MMR, Polio, Flu Shot"></div>
+  <div class="g2"><div><div class="il">Date Given</div><input class="ifield" type="date" id="v-date"></div><div><div class="il">Baby's Age</div><input class="ifield" id="v-age" placeholder="e.g. 2 months"></div></div>
+  <div class="g2"><div><div class="il">Doctor / Clinic</div><input class="ifield" id="v-doc" placeholder="Provider name"></div><div><div class="il">Lot Number</div><input class="ifield" id="v-lot" placeholder="Optional"></div></div>
+  <div class="ig"><div class="il">Site / Notes</div><input class="ifield" id="v-notes" placeholder="e.g. Left thigh, mild redness after"></div>
+  <div class="brow"><button class="btn btn-p" onclick="logH('vacc')" style="flex:1;">Save Vaccine</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-visit"><div class="modal"><div class="mh"></div><div class="mt">🏥 Add Doctor Visit</div>
+  <div class="ig"><div class="il">Reason / Type</div><input class="ifield" id="vis-rsn" placeholder="e.g. 2-month checkup, sick visit"></div>
+  <div class="g2"><div><div class="il">Date</div><input class="ifield" type="date" id="vis-date"></div><div><div class="il">Doctor / Clinic</div><input class="ifield" id="vis-doc" placeholder="Name or clinic"></div></div>
+  <div class="ig"><div class="il">Diagnosis / Results</div><input class="ifield" id="vis-diag" placeholder="e.g. Healthy, ear infection"></div>
+  <div class="ig"><div class="il">Treatment / Prescriptions</div><input class="ifield" id="vis-tx" placeholder="e.g. Amoxicillin 250mg × 10 days"></div>
+  <div class="ig"><div class="il">Follow-up / Notes</div><textarea class="ifield" id="vis-notes" rows="2" placeholder="Next appointment, special instructions…"></textarea></div>
+  <div class="brow"><button class="btn btn-p" onclick="logH('visit')" style="flex:1;">Save Visit</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-mhist"><div class="modal"><div class="mh"></div><div class="mt">💊 Add Medication Record</div>
+  <div class="ig"><div class="il">Medication Name</div><input class="ifield" id="mh-name" placeholder="e.g. Amoxicillin, Vitamin D drops"></div>
+  <div class="g2"><div><div class="il">Dose</div><input class="ifield" id="mh-dose" placeholder="e.g. 5 mL"></div><div><div class="il">Frequency</div><input class="ifield" id="mh-freq" placeholder="e.g. twice daily"></div></div>
+  <div class="g2"><div><div class="il">Start Date</div><input class="ifield" type="date" id="mh-start"></div><div><div class="il">End Date</div><input class="ifield" type="date" id="mh-end"></div></div>
+  <div class="ig"><div class="il">Reason / Prescribing Doctor</div><input class="ifield" id="mh-rsn" placeholder="e.g. Ear infection — Dr. Smith"></div>
+  <div class="ig"><div class="il">Notes / Side Effects</div><input class="ifield" id="mh-notes" placeholder="Observations…"></div>
+  <div class="brow"><button class="btn btn-p" onclick="logH('mhist')" style="flex:1;">Save Medication</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-info"><div class="modal"><div class="mh"></div><div class="mt">👶 Baby Profile</div>
+  <div class="g2"><div><div class="il">First Name</div><input class="ifield" id="i-fn" placeholder="First"></div><div><div class="il">Last Name</div><input class="ifield" id="i-ln" placeholder="Last"></div></div>
+  <div class="g2"><div><div class="il">Date of Birth</div><input class="ifield" type="date" id="i-dob"></div><div><div class="il">Blood Type</div><input class="ifield" id="i-blood" placeholder="e.g. O+"></div></div>
+  <div class="ig"><div class="il" style="color:var(--rose);">SSN — 🔒 Encrypted with your PIN</div><input class="ifield" id="i-ssn" placeholder="xxx-xx-xxxx" maxlength="11"></div>
+  <div class="g2"><div><div class="il">Pediatrician</div><input class="ifield" id="i-ped" placeholder="Doctor name"></div><div><div class="il">Ped. Phone</div><input class="ifield" type="tel" id="i-pedph" placeholder="(555) 000-0000"></div></div>
+  <div class="ig"><div class="il">Insurance Provider</div><input class="ifield" id="i-ins" placeholder="e.g. Aetna, Blue Cross"></div>
+  <div class="ig"><div class="il">Member ID</div><input class="ifield" id="i-insid" placeholder="Insurance member ID"></div>
+  <div class="brow"><button class="btn btn-p" onclick="saveInfo('profile')" style="flex:1;">Save Profile</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-birth"><div class="modal"><div class="mh"></div><div class="mt">🏥 Birth Details</div>
+  <div class="g2"><div><div class="il">Birth Date</div><input class="ifield" type="date" id="b-date"></div><div><div class="il">Birth Time</div><input class="ifield" type="time" id="b-time"></div></div>
+  <div class="g2"><div><div class="il">Birth Weight</div><input class="ifield" id="b-wt" placeholder="e.g. 7 lbs 4 oz"></div><div><div class="il">Birth Length</div><input class="ifield" id="b-len" placeholder="e.g. 20 inches"></div></div>
+  <div class="g2"><div><div class="il">Hospital</div><input class="ifield" id="b-hosp" placeholder="Hospital name"></div><div><div class="il">Delivery Type</div><select class="ifield" id="b-del"><option>Vaginal</option><option>C-Section</option><option>VBAC</option><option>Other</option></select></div></div>
+  <div class="ig"><div class="il">Delivering Doctor / Midwife</div><input class="ifield" id="b-doc" placeholder="Name"></div>
+  <div class="g2"><div><div class="il">APGAR (1 min)</div><input class="ifield" type="number" id="b-a1" placeholder="0-10"></div><div><div class="il">APGAR (5 min)</div><input class="ifield" type="number" id="b-a5" placeholder="0-10"></div></div>
+  <div class="ig"><div class="il">Notes</div><textarea class="ifield" id="b-notes" rows="2" placeholder="Birth story highlights…"></textarea></div>
+  <div class="brow"><button class="btn btn-p" onclick="saveInfo('birth')" style="flex:1;">Save Birth Details</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-mdalerts"><div class="modal"><div class="mh"></div><div class="mt">⚠️ Medical Alerts</div>
+  <div class="ig"><div class="il">Allergies</div><textarea class="ifield" id="ma-allergy" rows="2" placeholder="List known allergies (food, medication, environmental)…"></textarea></div>
+  <div class="ig"><div class="il">Special Conditions / Diagnoses</div><textarea class="ifield" id="ma-cond" rows="2" placeholder="e.g. Reflux, colic, laryngomalacia…"></textarea></div>
+  <div class="ig"><div class="il">Current Regular Medications</div><textarea class="ifield" id="ma-meds" rows="2" placeholder="Ongoing medications and doses…"></textarea></div>
+  <div class="ig"><div class="il">Emergency Contact</div><input class="ifield" id="ma-emerg" placeholder="Name and phone number"></div>
+  <div class="ig"><div class="il">Additional Notes</div><textarea class="ifield" id="ma-notes" rows="2" placeholder="Any other important medical info…"></textarea></div>
+  <div class="brow"><button class="btn btn-p" onclick="saveInfo('medAlerts')" style="flex:1;">Save Medical Alerts</button></div><div style="height:8px;"></div>
+</div></div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  PIN SYSTEM
+// ══════════════════════════════════════════════════
+const PKEY = 'bb_pin';
+let pinBuf = '', pinMode = 'unlock', pinFirst = '', sessionKey = '';
+
+async function sha(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function enc(txt, key) {
+  if (!txt) return '';
+  const k = await sha(key+'enc');
+  let o='';
+  for (let i=0;i<txt.length;i++) o+=String.fromCharCode(txt.charCodeAt(i)^k.charCodeAt(i%k.length));
+  return btoa(o);
+}
+async function dec(e, key) {
+  if (!e) return '';
+  try {
+    const t=atob(e), k=await sha(key+'enc'); let o='';
+    for (let i=0;i<t.length;i++) o+=String.fromCharCode(t.charCodeAt(i)^k.charCodeAt(i%k.length));
+    return o;
+  } catch{return '';}
+}
+
+function lk(d) {
+  if (pinBuf.length>=4) return;
+  pinBuf+=d; updDots();
+  if (pinBuf.length===4) setTimeout(procPin,200);
+}
+function lkb() { pinBuf=pinBuf.slice(0,-1); updDots(); document.getElementById('lerr').textContent=''; }
+function updDots() { for(let i=0;i<4;i++) document.getElementById('ld'+i).className='ld'+(i<pinBuf.length?' on':''); }
+
+async function procPin() {
+  const stored=localStorage.getItem(PKEY);
+  if (pinMode==='unlock') {
+    if (await sha(pinBuf)===stored) {
+      sessionKey=pinBuf; pinBuf=''; updDots();
+      document.getElementById('lock').style.display='none';
+      showCgScr();
+    } else { pinBuf=''; updDots(); document.getElementById('lerr').textContent='Incorrect PIN. Try again.'; }
+  } else if (pinMode==='setup1'||pinMode==='chg1') {
+    pinFirst=pinBuf; pinBuf=''; updDots();
+    document.getElementById('lsub').textContent='Enter PIN again to confirm';
+    pinMode=pinMode==='setup1'?'setup2':'chg2';
+  } else if (pinMode==='setup2'||pinMode==='chg2') {
+    if (pinBuf===pinFirst) {
+      const h=await sha(pinBuf); localStorage.setItem(PKEY,h);
+      sessionKey=pinBuf; pinBuf=''; updDots();
+      document.getElementById('lock').style.display='none';
+      if (pinMode==='chg2') { document.getElementById('app').style.display='flex'; renderAll(); }
+      else showCgScr();
+    } else {
+      pinBuf=''; updDots();
+      document.getElementById('lerr').textContent='PINs did not match. Try again.';
+      pinMode=pinMode==='setup2'?'setup1':'chg1';
+      document.getElementById('lsub').textContent='Choose a new 4-digit PIN';
+    }
+  }
+}
+
+function startSetup() { pinMode='setup1'; pinBuf=''; updDots(); document.getElementById('lsub').textContent='Choose a 4-digit PIN'; document.getElementById('lerr').textContent=''; }
+function changePin() {
+  document.getElementById('app').style.display='none';
+  document.getElementById('lock').style.display='flex';
+  pinMode='chg1'; pinBuf=''; updDots();
+  document.getElementById('lsub').textContent='Choose a new 4-digit PIN';
+  document.getElementById('lerr').textContent='';
+}
+
+function initLock() {
+  if (!localStorage.getItem(PKEY)) {
+    pinMode='setup1';
+    document.getElementById('ltitle').textContent='Welcome to Baby Book';
+    document.getElementById('lsub').textContent="Set a 4-digit PIN to protect your baby's information";
+    document.getElementById('lhint').textContent='Your PIN encrypts sensitive data like SSN';
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let caregiver='', caregivers=['Mom','Dad','Grandma','Grandpa','Nanny'];
+let allEntries={}, healthRecs={}, growthRecs={}, motorRecs={}, milestones={};
+let babyProfile={}, birthInfo={}, medAlerts={};
+let fbOK=false;
+
+const MS_LIST=[
+  {id:'ms1', lbl:'Lifts head during tummy time',       age:'1-2 mo',  cat:'Gross Motor'},
+  {id:'ms2', lbl:'First social smile',                 age:'1-2 mo',  cat:'Social'},
+  {id:'ms3', lbl:'Tracks objects with eyes',           age:'2 mo',    cat:'Cognitive'},
+  {id:'ms4', lbl:'Coos and makes sounds',              age:'2-3 mo',  cat:'Language'},
+  {id:'ms5', lbl:'Holds head steady',                  age:'3-4 mo',  cat:'Gross Motor'},
+  {id:'ms6', lbl:'Reaches for objects',                age:'3-4 mo',  cat:'Fine Motor'},
+  {id:'ms7', lbl:'Rolls front to back',                age:'4 mo',    cat:'Gross Motor'},
+  {id:'ms8', lbl:'Laughs out loud',                    age:'4 mo',    cat:'Social'},
+  {id:'ms9', lbl:'Rolls back to front',                age:'5-6 mo',  cat:'Gross Motor'},
+  {id:'ms10',lbl:'Sits with support',                  age:'5-6 mo',  cat:'Gross Motor'},
+  {id:'ms11',lbl:'Passes objects hand to hand',        age:'6-7 mo',  cat:'Fine Motor'},
+  {id:'ms12',lbl:'Sits without support',               age:'6-8 mo',  cat:'Gross Motor'},
+  {id:'ms13',lbl:'Babbles (mama/dada sounds)',         age:'6-9 mo',  cat:'Language'},
+  {id:'ms14',lbl:'Pincer grasp (thumb & finger)',      age:'9 mo',    cat:'Fine Motor'},
+  {id:'ms15',lbl:'Pulls to stand',                     age:'9-10 mo', cat:'Gross Motor'},
+  {id:'ms16',lbl:'Waves bye-bye',                      age:'9-10 mo', cat:'Social'},
+  {id:'ms17',lbl:'Cruises along furniture',            age:'10-11 mo',cat:'Gross Motor'},
+  {id:'ms18',lbl:'Says first word',                    age:'12 mo',   cat:'Language'},
+  {id:'ms19',lbl:'First steps',                        age:'12 mo',   cat:'Gross Motor'},
+  {id:'ms20',lbl:'Points to objects',                  age:'12 mo',   cat:'Cognitive'},
+  {id:'ms21',lbl:'Stacks two blocks',                  age:'12-14 mo',cat:'Fine Motor'},
+  {id:'ms22',lbl:'Walks well independently',           age:'14-15 mo',cat:'Gross Motor'},
+  {id:'ms23',lbl:'Says 2-word phrases',                age:'18-24 mo',cat:'Language'},
+  {id:'ms24',lbl:'Runs',                               age:'18 mo',   cat:'Gross Motor'},
+];
+
+const TM={
+  feed:{icon:'🍼',bg:'#fdeef1',lbl:'Feeding'},
+  diap:{icon:'🚼',bg:'#edf7f2',lbl:'Diaper'},
+  slp:{icon:'😴',bg:'#f3eef8',lbl:'Sleep'},
+  hlth:{icon:'🌡️',bg:'#eaf4fb',lbl:'Health'},
+  grow:{icon:'📏',bg:'#fef6e4',lbl:'Growth'},
+  meds:{icon:'💊',bg:'#fef0ec',lbl:'Medicine'},
+  motor:{icon:'🌟',bg:'#f0faf4',lbl:'Milestone'},
+};
+
+// ══════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════
+function tk() { const d=new Date(); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; }
+function z(n){return String(n).padStart(2,'0');}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function nw(){const n=new Date();return `${z(n.getHours())}:${z(n.getMinutes())}`;}
+function f12(t){if(!t)return '';const[h,m]=t.split(':').map(Number);return `${h%12||12}:${z(m)} ${h>=12?'PM':'AM'}`;}
+function ts(stamp){const m=Math.round((Date.now()-stamp)/60000);if(m<1)return 'just now';if(m<60)return `${m}m ago`;const h=Math.floor(m/60),r=m%60;return r?`${h}h ${r}m ago`:`${h}h ago`;}
+function sp(el,g){document.querySelectorAll('#'+g+' .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+function tp(el){el.classList.toggle('on');}
+function gp(g){const a=document.querySelector('#'+g+' .pill.on');return a?a.textContent.trim():'';}
+function gps(g){return[...document.querySelectorAll('#'+g+' .pill.on')].map(p=>p.textContent.trim());}
+function lsGet(k,d={}){try{return JSON.parse(localStorage.getItem(k))||d;}catch{return d;}}
+function setSyncDot(s){const el=document.getElementById('sdot');if(el)el.className=s;}
+
+function openM(id){
+  const tm={'m-feed':'f-time','m-diap':'d-time','m-hlth':'h-time','m-meds':'med-time'};
+  if(tm[id])document.getElementById(tm[id]).value=nw();
+  if(id==='m-slp'){document.getElementById('s-start').value=nw();document.getElementById('s-end').value='';}
+  if(id==='m-grow')document.getElementById('gr-date').value=tk();
+  if(id==='m-motor')document.getElementById('mot-date').value=tk();
+  if(['m-vacc','m-visit','m-mhist'].includes(id)){
+    const di=id==='m-vacc'?'v-date':id==='m-visit'?'vis-date':'mh-start';
+    document.getElementById(di).value=tk();
+  }
+  document.getElementById(id).classList.add('open');
+}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.ov').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)closeM(ov.id);}));
+
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#2a1a12;color:#fff;padding:9px 18px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.2);font-family:"DM Sans",sans-serif;';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},2200);
+}
+
+// ══════════════════════════════════════════════════
+//  FIREBASE / LOCALSTORAGE
+// ══════════════════════════════════════════════════
+function isFB(){return!!window._fbReady;}
+
+function fbSet(path,val){
+  setSyncDot('saving');
+  if(fbOK){window._set(window._ref(window._db,path),val).then(()=>setSyncDot('live')).catch(()=>setSyncDot('error'));}
+  else{localStorage.setItem('bb_'+path.replace(/\//g,'_'),JSON.stringify(val));setSyncDot('live');}
+}
+function fbDel(path){
+  if(fbOK)window._remove(window._ref(window._db,path)).catch(()=>{});
+  else localStorage.removeItem('bb_'+path.replace(/\//g,'_'));
+}
+
+function loadLocal(){
+  allEntries  =lsGet('bb_entries_v2',{});
+  healthRecs  =lsGet('bb_healthRecs',{});
+  growthRecs  =lsGet('bb_growthRecs',{});
+  motorRecs   =lsGet('bb_motorRecs',{});
+  milestones  =lsGet('bb_milestones',{});
+  babyProfile =lsGet('bb_babyProfile',{});
+  birthInfo   =lsGet('bb_birthInfo',{});
+  medAlerts   =lsGet('bb_medAlerts',{});
+  try{caregivers=JSON.parse(localStorage.getItem('bb_caregivers'))||caregivers;}catch{}
+}
+
+function startListen(){
+  if(!fbOK){loadLocal();return;}
+  window._onValue(window._ref(window._db,'/'),snap=>{
+    const d=snap.val()||{};
+    allEntries  =d.entries||{};
+    healthRecs  =d.health||{};
+    growthRecs  =d.growth||{};
+    motorRecs   =d.motor||{};
+    milestones  =d.milestones||{};
+    babyProfile =d.profile||{};
+    birthInfo   =d.birth||{};
+    medAlerts   =d.medAlerts||{};
+    if(d.caregivers)caregivers=d.caregivers;
+    setSyncDot('live');
+    renderAll();
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  CG SCREEN
+// ══════════════════════════════════════════════════
+function showCgScr(){
+  const last=localStorage.getItem('bb_cg');
+  if(last){caregiver=last;launch();return;}
+  document.getElementById('cg-scr').style.display='flex';
+  buildCgGrid();
+}
+function buildCgGrid(){
+  document.getElementById('cg-grid').innerHTML=caregivers.map(n=>`<div class="cg-chip" onclick="selCG('${n}')">${n}</div>`).join('');
+}
+function selCG(name){caregiver=name;localStorage.setItem('bb_cg',name);document.getElementById('cg-scr').style.display='none';launch();}
+function cgAddNew(){const v=document.getElementById('cg-inp').value.trim();if(!v)return;if(!caregivers.includes(v)){caregivers.push(v);fbSet('caregivers',caregivers);}document.getElementById('cg-inp').value='';selCG(v);}
+function switchCG(){localStorage.removeItem('bb_cg');document.getElementById('app').style.display='none';document.getElementById('cg-scr').style.display='flex';buildCgGrid();}
+
+function launch(){
+  document.getElementById('app').style.display='flex';
+  document.getElementById('cgbadge').textContent=caregiver;
+  if(!isFB())document.getElementById('demo-banner').style.display='block';
+  fbOK=isFB();
+  startListen();
+  if(!fbOK){renderAll();}
+  buildChecklist();
+  renderHistory();
+  setSyncDot('live');
+}
+
+// ══════════════════════════════════════════════════
+//  LOG
+// ══════════════════════════════════════════════════
+function sub(e){
+  if(e.type==='feed')  return[e.ftype,e.amt,f12(e.time)].filter(Boolean).join(' · ');
+  if(e.type==='diap')  return[e.dtype,e.color!=='Normal'?e.color:'',f12(e.time)].filter(Boolean).join(' · ');
+  if(e.type==='slp')   return[e.stype,e.start?f12(e.start)+(e.end?' → '+f12(e.end):' (ongoing)'):'',,e.loc].filter(Boolean).join(' · ');
+  if(e.type==='hlth')  return[(e.temp?e.temp+'°F':''),e.syms?.join(', ')||'',f12(e.time)].filter(Boolean).join(' · ');
+  if(e.type==='grow')  return[(e.wt?e.wt+'lb':''),(e.ht?e.ht+'"':''),(e.hc?'HC '+e.hc+'"':'')].filter(Boolean).join(' · ');
+  if(e.type==='meds')  return[e.med,e.dose,f12(e.time)].filter(Boolean).join(' · ');
+  if(e.type==='motor') return[e.name,e.cat,e.age].filter(Boolean).join(' · ');
+  return'';
+}
+
+function log(type){
+  const dk=tk(), id=uid();
+  let d={type,caregiver,timestamp:Date.now()};
+
+  if(type==='feed'){
+    d.ftype=gp('pp-ftype');d.amt=document.getElementById('f-amt').value.trim();
+    d.time=document.getElementById('f-time').value;d.notes=document.getElementById('f-notes').value.trim();
+    document.getElementById('f-amt').value='';document.getElementById('f-notes').value='';
+  }else if(type==='diap'){
+    d.dtype=gp('pp-dtype');d.color=gp('pp-dcol');
+    d.time=document.getElementById('d-time').value;d.notes=document.getElementById('d-notes').value.trim();
+    document.getElementById('d-notes').value='';
+  }else if(type==='slp'){
+    d.stype=gp('pp-stype');d.loc=gp('pp-sloc');
+    d.start=document.getElementById('s-start').value;d.end=document.getElementById('s-end').value;
+    d.notes=document.getElementById('s-notes').value.trim();
+    document.getElementById('s-notes').value='';
+  }else if(type==='hlth'){
+    d.temp=document.getElementById('h-temp').value;
+    d.syms=gps('pp-sym');
+    d.time=document.getElementById('h-time').value;d.notes=document.getElementById('h-notes').value.trim();
+    document.getElementById('h-temp').value='';document.getElementById('h-notes').value='';
+    document.querySelectorAll('#pp-sym .pill').forEach(p=>p.classList.remove('on'));
+  }else if(type==='grow'){
+    d.wt=document.getElementById('gr-wt').value;d.ht=document.getElementById('gr-ht').value;
+    d.hc=document.getElementById('gr-hc').value;d.date=document.getElementById('gr-date').value;
+    d.notes=document.getElementById('gr-notes').value.trim();
+    if(!d.wt&&!d.ht&&!d.hc){toast('Enter at least one measurement');return;}
+    ['gr-wt','gr-ht','gr-hc','gr-notes'].forEach(i=>document.getElementById(i).value='');
+    growthRecs[id]={...d,id};
+    if(fbOK)window._set(window._ref(window._db,'growth/'+id),growthRecs[id]).catch(()=>{});
+    else localStorage.setItem('bb_growthRecs',JSON.stringify(growthRecs));
+  }else if(type==='meds'){
+    d.med=gp('pp-med');d.dose=document.getElementById('med-dose').value.trim();
+    d.time=document.getElementById('med-time').value;d.notes=document.getElementById('med-notes').value.trim();
+    document.getElementById('med-dose').value='';document.getElementById('med-notes').value='';
+  }else if(type==='motor'){
+    const n=document.getElementById('mot-name').value.trim();
+    if(!n){toast('Enter milestone name');return;}
+    d.name=n;d.cat=gp('pp-mcat');
+    d.date=document.getElementById('mot-date').value;d.age=document.getElementById('mot-age').value.trim();
+    d.notes=document.getElementById('mot-notes').value.trim();
+    document.getElementById('mot-name').value='';document.getElementById('mot-age').value='';
+    document.getElementById('mot-notes').value='';
+    motorRecs[id]={...d,id};
+    if(fbOK)window._set(window._ref(window._db,'motor/'+id),motorRecs[id]).catch(()=>{});
+    else localStorage.setItem('bb_motorRecs',JSON.stringify(motorRecs));
+    renderMotorList();
+  }
+
+  allEntries[dk]=allEntries[dk]||{};
+  allEntries[dk][id]=d;
+  if(fbOK)window._set(window._ref(window._db,'entries/'+dk+'/'+id),d).catch(()=>{});
+  else localStorage.setItem('bb_entries_v2',JSON.stringify(allEntries));
+
+  closeM('m-'+type);
+  renderToday();renderGrowthList();
+  toast('✅ '+(TM[type]?.lbl||'Entry')+' logged!');
+}
+
+function logH(type){
+  const id=uid();
+  let d={type,caregiver,timestamp:Date.now()};
+  if(type==='vacc'){
+    d.name=document.getElementById('v-name').value.trim();if(!d.name){toast('Enter vaccine name');return;}
+    d.date=document.getElementById('v-date').value;d.age=document.getElementById('v-age').value.trim();
+    d.doctor=document.getElementById('v-doc').value.trim();d.lot=document.getElementById('v-lot').value.trim();
+    d.notes=document.getElementById('v-notes').value.trim();
+    ['v-name','v-age','v-doc','v-lot','v-notes'].forEach(i=>document.getElementById(i).value='');
+  }else if(type==='visit'){
+    d.reason=document.getElementById('vis-rsn').value.trim();if(!d.reason){toast('Enter reason');return;}
+    d.date=document.getElementById('vis-date').value;d.doctor=document.getElementById('vis-doc').value.trim();
+    d.diag=document.getElementById('vis-diag').value.trim();d.tx=document.getElementById('vis-tx').value.trim();
+    d.notes=document.getElementById('vis-notes').value.trim();
+    ['vis-rsn','vis-doc','vis-diag','vis-tx','vis-notes'].forEach(i=>document.getElementById(i).value='');
+  }else if(type==='mhist'){
+    d.name=document.getElementById('mh-name').value.trim();if(!d.name){toast('Enter medication');return;}
+    d.dose=document.getElementById('mh-dose').value.trim();d.freq=document.getElementById('mh-freq').value.trim();
+    d.start=document.getElementById('mh-start').value;d.end=document.getElementById('mh-end').value;
+    d.reason=document.getElementById('mh-rsn').value.trim();d.notes=document.getElementById('mh-notes').value.trim();
+    ['mh-name','mh-dose','mh-freq','mh-rsn','mh-notes'].forEach(i=>document.getElementById(i).value='');
+  }
+  healthRecs[type]=healthRecs[type]||{};
+  healthRecs[type][id]={...d,id};
+  if(fbOK)window._set(window._ref(window._db,'health/'+type+'/'+id),d).catch(()=>{});
+  else localStorage.setItem('bb_healthRecs',JSON.stringify(healthRecs));
+  closeM('m-'+type.replace('mhist','mhist'));
+  renderHealthPage();
+  toast('✅ Saved!');
+}
+
+function delE(dk,id){
+  if(!confirm('Delete this entry?'))return;
+  if(allEntries[dk])delete allEntries[dk][id];
+  if(fbOK)window._remove(window._ref(window._db,'entries/'+dk+'/'+id)).catch(()=>{});
+  else localStorage.setItem('bb_entries_v2',JSON.stringify(allEntries));
+  renderToday();renderHistory();
+}
+function delH(type,id){
+  if(!confirm('Delete this record?'))return;
+  if(healthRecs[type])delete healthRecs[type][id];
+  if(fbOK)window._remove(window._ref(window._db,'health/'+type+'/'+id)).catch(()=>{});
+  else localStorage.setItem('bb_healthRecs',JSON.stringify(healthRecs));
+  renderHealthPage();
+}
+function delGrow(id){
+  if(!confirm('Delete?'))return;
+  delete growthRecs[id];
+  if(fbOK)window._remove(window._ref(window._db,'growth/'+id)).catch(()=>{});
+  else localStorage.setItem('bb_growthRecs',JSON.stringify(growthRecs));
+  renderGrowthList();
+}
+function delMotor(id){
+  if(!confirm('Delete?'))return;
+  delete motorRecs[id];
+  if(fbOK)window._remove(window._ref(window._db,'motor/'+id)).catch(()=>{});
+  else localStorage.setItem('bb_motorRecs',JSON.stringify(motorRecs));
+  renderMotorList();
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER TODAY
+// ══════════════════════════════════════════════════
+function renderToday(){
+  const dk=tk();
+  const entries=Object.entries(allEntries[dk]||{}).map(([id,e])=>({id,...e})).sort((a,b)=>b.timestamp-a.timestamp);
+  const lof=t=>entries.find(e=>e.type===t);
+  const lf=lof('feed'),ld=lof('diap'),ls=lof('slp'),lm=lof('meds');
+  [['qs-feed',lf],['qs-diap',ld],['qs-slp',ls],['qs-meds',lm]].forEach(([id,e])=>{
+    const el=document.getElementById(id);if(el)el.textContent=e?ts(e.timestamp):'Tap to log';
+  });
+  const feeds=entries.filter(e=>e.type==='feed').length;
+  const wet=entries.filter(e=>e.type==='diap'&&(e.dtype==='Wet'||e.dtype==='Both')).length;
+  const dirty=entries.filter(e=>e.type==='diap'&&(e.dtype==='Dirty'||e.dtype==='Both')).length;
+  const slpMs=entries.filter(e=>e.type==='slp'&&e.start&&e.end).reduce((s,e)=>{
+    const[sh,sm]=e.start.split(':').map(Number),[eh,em]=e.end.split(':').map(Number);
+    let m=(eh*60+em)-(sh*60+sm);if(m<0)m+=1440;return s+m;
+  },0);
+  document.getElementById('today-stats').innerHTML=[
+    feeds?`<div class="sc">🍼 ${feeds} feeding${feeds!==1?'s':''}</div>`:'',
+    (wet||dirty)?`<div class="sc">🚼 ${wet}W/${dirty}D diapers</div>`:'',
+    slpMs?`<div class="sc">😴 ${Math.floor(slpMs/60)}h ${slpMs%60}m sleep</div>`:'',
+  ].filter(Boolean).join('')||`<div style="font-size:13px;color:var(--text3);">Tap a button above to start logging.</div>`;
+
+  const fd=document.getElementById('feed');
+  if(!entries.length){fd.innerHTML=`<div class="empty"><div class="ei">🌙</div><div class="et">No activity yet today.<br>Tap a button above to log something.</div></div>`;return;}
+  fd.innerHTML=entries.map(e=>{
+    const m=TM[e.type]||{icon:'📝',bg:'#f5f5f5',lbl:e.type};
+    const sb=sub(e);
+    return`<div class="ae"><div class="adot" style="background:${m.bg};">${m.icon}</div>
+      <div class="ai"><div class="at">${m.lbl}${sb?' — '+sb:''}</div>
+      <div class="am">by ${e.caregiver}${e.notes?' · '+e.notes:''}</div></div>
+      <div style="display:flex;align-items:center;gap:2px;">
+        <div class="atime">${ts(e.timestamp)}</div>
+        <div class="xb" onclick="delE('${dk}','${e.id}')">✕</div>
+      </div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  HEALTH PAGE
+// ══════════════════════════════════════════════════
+function renderHealthPage(){
+  const vacc=Object.values(healthRecs.vacc||{}).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('vacc-list').innerHTML=vacc.length?vacc.map(v=>`<div class="hrec"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="hrec-t">💉 ${v.name}</div><div class="hrec-s">${[v.date,v.age,v.doctor].filter(Boolean).join(' · ')}</div>${v.lot?`<div class="hrec-s">Lot: ${v.lot}</div>`:''} ${v.notes?`<div class="hrec-s">${v.notes}</div>`:''}</div><div class="xb" onclick="delH('vacc','${v.id}')">✕</div></div></div>`).join(''):`<div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">💉</div><div class="et">No vaccines recorded yet.</div></div>`;
+
+  const vis=Object.values(healthRecs.visit||{}).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('visit-list').innerHTML=vis.length?vis.map(v=>`<div class="hrec"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="hrec-t">🏥 ${v.reason}</div><div class="hrec-s">${[v.date,v.doctor].filter(Boolean).join(' · ')}</div>${v.diag?`<div class="hrec-s">Dx: ${v.diag}</div>`:''}${v.tx?`<div class="hrec-s">Tx: ${v.tx}</div>`:''}${v.notes?`<div class="hrec-s">${v.notes}</div>`:''}</div><div class="xb" onclick="delH('visit','${v.id}')">✕</div></div></div>`).join(''):`<div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">🏥</div><div class="et">No visits recorded yet.</div></div>`;
+
+  const mh=Object.values(healthRecs.mhist||{}).sort((a,b)=>(b.start||'').localeCompare(a.start||''));
+  document.getElementById('mhist-list').innerHTML=mh.length?mh.map(v=>`<div class="hrec"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="hrec-t">💊 ${v.name} — ${v.dose||''} ${v.freq||''}</div><div class="hrec-s">${[v.start,v.end?'to '+v.end:'',v.reason].filter(Boolean).join(' · ')}</div>${v.notes?`<div class="hrec-s">${v.notes}</div>`:''}</div><div class="xb" onclick="delH('mhist','${v.id}')">✕</div></div></div>`).join(''):`<div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">💊</div><div class="et">No medications recorded yet.</div></div>`;
+}
+
+// ══════════════════════════════════════════════════
+//  MOTOR / MILESTONES
+// ══════════════════════════════════════════════════
+function renderMotorList(){
+  const recs=Object.values(motorRecs).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('motor-list').innerHTML=recs.length?recs.map(r=>`<div class="ae"><div class="adot" style="background:#f0faf4;">🌟</div><div class="ai"><div class="at">${r.name}</div><div class="am">${[r.cat,r.date,r.age].filter(Boolean).join(' · ')}${r.notes?' · '+r.notes:''}</div></div><div class="xb" onclick="delMotor('${r.id}')">✕</div></div>`).join(''):`<div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">🌟</div><div class="et">No milestones logged yet.</div></div>`;
+}
+
+function buildChecklist(){
+  const cats={};
+  MS_LIST.forEach(m=>{(cats[m.cat]=cats[m.cat]||[]).push(m);});
+  document.getElementById('ms-checklist').innerHTML=Object.entries(cats).map(([cat,ms])=>`
+    <div class="card" style="margin-bottom:10px;">
+      <div class="ch"><div class="ct">${cat}</div></div>
+      <div class="cb">
+        ${ms.map(m=>{const done=milestones[m.id]?.achieved,dt=milestones[m.id]?.date||'';
+          return`<div class="msrow">
+            <div class="mschk ${done?'done':''}" onclick="togMS('${m.id}')">${done?'✓':''}</div>
+            <div class="mslbl" style="${done?'text-decoration:line-through;color:var(--text3);':''}">${m.lbl}</div>
+            <div class="msage">${m.age}</div>
+            ${done&&dt?`<div class="msdt">${dt}</div>`:''}
+          </div>`;}).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function togMS(id){
+  const cur=milestones[id]?.achieved;
+  milestones[id]={achieved:!cur,date:!cur?tk():''};
+  if(fbOK)window._set(window._ref(window._db,'milestones/'+id),milestones[id]).catch(()=>{});
+  else localStorage.setItem('bb_milestones',JSON.stringify(milestones));
+  buildChecklist();
+}
+
+// ══════════════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════════════
+let hMon=new Date(),hSel=null;
+function hPrev(){hMon.setMonth(hMon.getMonth()-1);renderHistory();}
+function hNext(){const n=new Date(hMon);n.setMonth(n.getMonth()+1);if(n<=new Date()){hMon=n;renderHistory();}}
+
+function renderHistory(){
+  const m=hMon,today=tk();
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('h-month').textContent=`${MN[m.getMonth()]} ${m.getFullYear()}`;
+  const nxt=new Date(m);nxt.setMonth(nxt.getMonth()+1);
+  document.getElementById('h-next').disabled=nxt>new Date();
+  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
+  const days=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  let cells='';
+  for(let i=0;i<first;i++)cells+=`<div class="ccell emp"></div>`;
+  for(let d=1;d<=days;d++){
+    const key=`${m.getFullYear()}-${z(m.getMonth()+1)}-${z(d)}`;
+    const has=Object.keys(allEntries[key]||{}).length>0;
+    const isTod=key===today,isFut=new Date(m.getFullYear(),m.getMonth(),d)>new Date(),isSel=key===hSel;
+    let cls='ccell';
+    if(isFut)cls+=' fut';else if(isSel)cls+=' sel';else if(isTod)cls+=' tod';else if(has)cls+=' has';
+    const dot=has&&!isSel?'<div class="cdot"></div>':'';
+    cells+=`<div class="${cls}" ${isFut?'':`onclick="selHDay('${key}')"`}>${d}${dot}</div>`;
+  }
+  document.getElementById('h-cal').innerHTML=cells;
+  if(hSel)renderHDetail(hSel);
+}
+function selHDay(k){hSel=k;renderHistory();renderHDetail(k);}
+function renderHDetail(key){
+  const entries=Object.entries(allEntries[key]||{}).map(([id,e])=>({id,...e})).sort((a,b)=>a.timestamp-b.timestamp);
+  const dd=document.getElementById('h-detail');
+  if(!entries.length){dd.innerHTML=`<div class="empty" style="padding:20px 0;"><div class="ei">🌙</div><div class="et">Nothing logged on this day.</div></div>`;return;}
+  const d=new Date(key+'T12:00:00');
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const byType={};
+  entries.forEach(e=>{(byType[e.type]=byType[e.type]||[]).push(e);});
+  let html=`<div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">${MN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</div>`;
+  Object.entries(TM).forEach(([type,meta])=>{
+    const g=byType[type];if(!g)return;
+    html+=`<div class="card" style="margin-bottom:10px;"><div class="ch"><div class="ct">${meta.icon} ${meta.lbl} (${g.length})</div></div>
+      ${g.map(e=>`<div class="ae"><div class="adot" style="background:${meta.bg};">${meta.icon}</div><div class="ai"><div class="at">${sub(e)||meta.lbl}</div><div class="am">by ${e.caregiver}${e.notes?' · '+e.notes:''}</div></div><div class="xb" onclick="delE('${key}','${e.id}')">✕</div></div>`).join('')}
+    </div>`;
+  });
+  dd.innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════
+//  GROWTH LIST
+// ══════════════════════════════════════════════════
+function renderGrowthList(){
+  const recs=Object.values(growthRecs).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('growth-list').innerHTML=recs.length?recs.map(r=>{
+    const parts=[(r.wt?`⚖️ ${r.wt} lb`:''),(r.ht?`📐 ${r.ht}"`:''), (r.hc?`HC ${r.hc}"`:'')] .filter(Boolean);
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-weight:600;font-size:13px;">${r.date||'—'}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${parts.join('  ')}</div>${r.notes?`<div style="font-size:11px;color:var(--text3);">${r.notes}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;"><div style="font-size:11px;color:var(--text3);">by ${r.caregiver||''}</div><div class="xb" onclick="delGrow('${r.id||''}')">✕</div></div></div>`;
+  }).join(''):`<div class="empty" style="padding:16px 0;"><div class="ei" style="font-size:28px;">📏</div><div class="et">No measurements yet.</div></div>`;
+}
+
+// ══════════════════════════════════════════════════
+//  INFO / PROFILE
+// ══════════════════════════════════════════════════
+async function saveInfo(type){
+  if(type==='profile'){
+    const ssnRaw=document.getElementById('i-ssn').value.trim();
+    const ssnEnc=ssnRaw?await enc(ssnRaw,sessionKey):(babyProfile.ssnEnc||'');
+    babyProfile={
+      firstName:document.getElementById('i-fn').value.trim(),
+      lastName:document.getElementById('i-ln').value.trim(),
+      dob:document.getElementById('i-dob').value,
+      blood:document.getElementById('i-blood').value.trim(),
+      ssnEnc,
+      pediatrician:document.getElementById('i-ped').value.trim(),
+      pedPhone:document.getElementById('i-pedph').value.trim(),
+      insurance:document.getElementById('i-ins').value.trim(),
+      insId:document.getElementById('i-insid').value.trim(),
+    };
+    document.getElementById('i-ssn').value='';
+    if(fbOK)window._set(window._ref(window._db,'profile'),babyProfile).catch(()=>{});
+    else localStorage.setItem('bb_babyProfile',JSON.stringify(babyProfile));
+    closeM('m-info');renderInfoPage();updHeader();toast('✅ Profile saved!');
+  }else if(type==='birth'){
+    birthInfo={
+      date:document.getElementById('b-date').value,
+      time:document.getElementById('b-time').value,
+      weight:document.getElementById('b-wt').value.trim(),
+      length:document.getElementById('b-len').value.trim(),
+      hospital:document.getElementById('b-hosp').value.trim(),
+      delivery:document.getElementById('b-del').value,
+      doctor:document.getElementById('b-doc').value.trim(),
+      apgar1:document.getElementById('b-a1').value,
+      apgar5:document.getElementById('b-a5').value,
+      notes:document.getElementById('b-notes').value.trim(),
+    };
+    if(fbOK)window._set(window._ref(window._db,'birth'),birthInfo).catch(()=>{});
+    else localStorage.setItem('bb_birthInfo',JSON.stringify(birthInfo));
+    closeM('m-birth');renderInfoPage();toast('✅ Birth details saved!');
+  }else if(type==='medAlerts'){
+    medAlerts={
+      allergies:document.getElementById('ma-allergy').value.trim(),
+      conditions:document.getElementById('ma-cond').value.trim(),
+      meds:document.getElementById('ma-meds').value.trim(),
+      emergency:document.getElementById('ma-emerg').value.trim(),
+      notes:document.getElementById('ma-notes').value.trim(),
+    };
+    if(fbOK)window._set(window._ref(window._db,'medAlerts'),medAlerts).catch(()=>{});
+    else localStorage.setItem('bb_medAlerts',JSON.stringify(medAlerts));
+    closeM('m-mdalerts');renderInfoPage();toast('✅ Medical alerts saved!');
+  }
+}
+
+function updHeader(){
+  const n=babyProfile.firstName||'Baby';
+  document.getElementById('hdr-name').textContent=`${n}'s Book`;
+  document.title=`${n}'s Baby Book`;
+}
+
+function ir(key,val,sensitive=false){
+  if(!val)return'';
+  const vhtml=sensitive
+    ?`<span class="ival blr" id="ssn-val" onclick="revSSN(this)">${val}</span><span class="revbtn" onclick="revSSN(document.getElementById('ssn-val'))">Show</span>`
+    :`<span class="ival">${val}</span>`;
+  return`<div class="irow"><div class="ikey">${key}</div>${vhtml}</div>`;
+}
+
+async function renderInfoPage(){
+  const p=babyProfile,b=birthInfo,ma=medAlerts;
+  document.getElementById('info-disp').innerHTML=[
+    ir('First Name',p.firstName),ir('Last Name',p.lastName),ir('Date of Birth',p.dob),
+    ir('Blood Type',p.blood),ir('SSN',p.ssnEnc?'•••-••-••••':'',true),
+    ir('Pediatrician',p.pediatrician),ir('Ped. Phone',p.pedPhone),
+    ir('Insurance',p.insurance),ir('Member ID',p.insId),
+  ].filter(Boolean).join('')||`<div style="font-size:13px;color:var(--text3);padding:8px 0;">Tap Edit to add baby's information.</div>`;
+
+  document.getElementById('birth-disp').innerHTML=[
+    ir('Birth Date',b.date),ir('Birth Time',f12(b.time)),ir('Weight',b.weight),ir('Length',b.length),
+    ir('Hospital',b.hospital),ir('Delivery',b.delivery),ir('Doctor',b.doctor),
+    ir('APGAR 1m',b.apgar1),ir('APGAR 5m',b.apgar5),ir('Notes',b.notes),
+  ].filter(Boolean).join('')||`<div style="font-size:13px;color:var(--text3);padding:8px 0;">Tap Edit to add birth details.</div>`;
+
+  document.getElementById('mdalerts-disp').innerHTML=[
+    ir('Allergies',ma.allergies),ir('Conditions',ma.conditions),ir('Regular Meds',ma.meds),
+    ir('Emergency',ma.emergency),ir('Notes',ma.notes),
+  ].filter(Boolean).join('')||`<div style="font-size:13px;color:var(--text3);padding:8px 0;">Tap Edit to add medical alerts.</div>`;
+
+  renderCGManage();renderGrowthList();
+
+  // Pre-fill edit modals
+  const fields=[['i-fn',p.firstName],['i-ln',p.lastName],['i-dob',p.dob],['i-blood',p.blood],['i-ped',p.pediatrician],['i-pedph',p.pedPhone],['i-ins',p.insurance],['i-insid',p.insId],['b-date',b.date],['b-time',b.time],['b-wt',b.weight],['b-len',b.length],['b-hosp',b.hospital],['b-doc',b.doctor],['b-a1',b.apgar1],['b-a5',b.apgar5],['b-notes',b.notes],['ma-allergy',ma.allergies],['ma-cond',ma.conditions],['ma-meds',ma.meds],['ma-emerg',ma.emergency],['ma-notes',ma.notes]];
+  fields.forEach(([id,val])=>{if(val&&document.getElementById(id))document.getElementById(id).value=val;});
+  if(b.delivery)document.getElementById('b-del').value=b.delivery;
+}
+
+async function revSSN(el){
+  if(!el||(!el.classList.contains('blr')&&el.textContent!=='•••-••-••••'))return;
+  const d=await dec(babyProfile.ssnEnc,sessionKey);
+  el.textContent=d||'(encrypted)';
+  el.classList.remove('blr');
+  setTimeout(()=>{el.textContent='•••-••-••••';el.classList.add('blr');},10000);
+}
+
+function renderCGManage(){
+  const el=document.getElementById('cg-manage');if(!el)return;
+  el.innerHTML=caregivers.map(n=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);"><div style="font-weight:600;font-size:14px;color:var(--text);">${n}</div><div class="xb" onclick="remCG('${n}')">✕</div></div>`).join('');
+}
+function cgAdd(){const v=document.getElementById('cg-add-inp').value.trim();if(!v||caregivers.includes(v))return;caregivers.push(v);if(fbOK)window._set(window._ref(window._db,'caregivers'),caregivers).catch(()=>{});else localStorage.setItem('bb_caregivers',JSON.stringify(caregivers));document.getElementById('cg-add-inp').value='';renderCGManage();}
+function remCG(n){caregivers=caregivers.filter(c=>c!==n);if(fbOK)window._set(window._ref(window._db,'caregivers'),caregivers).catch(()=>{});else localStorage.setItem('bb_caregivers',JSON.stringify(caregivers));renderCGManage();}
+
+// ══════════════════════════════════════════════════
+//  NAV & CLEAR
+// ══════════════════════════════════════════════════
+function showPg(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='health')renderHealthPage();
+  if(id==='motor'){renderMotorList();buildChecklist();}
+  if(id==='hist')renderHistory();
+  if(id==='info')renderInfoPage();
+}
+
+function clearToday(){if(!confirm("Clear today's log?"))return;const dk=tk();delete allEntries[dk];if(fbOK)window._remove(window._ref(window._db,'entries/'+dk)).catch(()=>{});else localStorage.setItem('bb_entries_v2',JSON.stringify(allEntries));renderToday();toast('🗑️ Today cleared');}
+function clearAll(){if(!confirm('Delete ALL data? Cannot be undone.'))return;allEntries={};healthRecs={};growthRecs={};motorRecs={};if(fbOK){window._set(window._ref(window._db,'entries'),null).catch(()=>{});window._set(window._ref(window._db,'health'),null).catch(()=>{});}else{['bb_entries_v2','bb_healthRecs','bb_growthRecs','bb_motorRecs'].forEach(k=>localStorage.setItem(k,'{}'));}renderAll();toast('🗑️ All data cleared');}
+
+function renderAll(){renderToday();renderHealthPage();renderMotorList();buildChecklist();renderHistory();renderGrowthList();renderInfoPage();updHeader();}
+
+setInterval(()=>{if(document.getElementById('pg-today').classList.contains('active'))renderToday();},60000);
+
+// ══════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════
+document.addEventListener('fb-ready',()=>{fbOK=true;});
+initLock();
+</script>
+</body>
+</html>
