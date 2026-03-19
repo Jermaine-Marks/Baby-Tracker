@@ -189,6 +189,30 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
 .ival.blr{filter:blur(5px);user-select:none;cursor:pointer;}
 .revbtn{font-size:11px;color:var(--rose);font-weight:600;cursor:pointer;padding:3px 8px;border:1px solid var(--rose-mid);border-radius:10px;flex-shrink:0;background:var(--rose-lt);}
 
+/* ADMIN PANEL */
+#admin-scr{position:fixed;inset:0;background:var(--cream);z-index:250;display:none;flex-direction:column;}
+#admin-scr.open{display:flex;}
+.admin-hdr{background:var(--white);border-bottom:1.5px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 10px rgba(160,100,70,.06);}
+.admin-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text);}
+.admin-close{font-size:22px;cursor:pointer;color:var(--text3);padding:4px 8px;}
+.admin-body{flex:1;overflow-y:auto;padding:16px;}
+.cg-row{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-md);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh);}
+.cg-row-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;}
+.cg-row-name{font-weight:700;font-size:15px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.cg-row-badge{font-size:10px;font-weight:700;background:var(--maize-lt);color:#8a6010;border:1px solid #f0d090;border-radius:10px;padding:2px 8px;}
+.cg-row-badge.set{background:var(--sage-lt);color:#2e6e4e;border-color:#b2dfc9;}
+.cg-pin-area{padding:0 15px 14px;border-top:1px solid var(--border);background:var(--cream);}
+.cg-pin-label{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:11px 0 7px;}
+.cg-pin-row{display:flex;gap:8px;align-items:center;}
+.cg-pin-display{flex:1;background:var(--white);border:1.5px solid var(--border2);border-radius:var(--r-sm);padding:10px 13px;font-size:16px;font-weight:700;color:var(--text);letter-spacing:4px;font-family:'Fraunces',serif;min-height:42px;}
+.cg-pin-display.empty{color:var(--text4);font-size:12px;font-weight:500;letter-spacing:0;}
+.admin-mini-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px;max-width:240px;}
+.mlk{aspect-ratio:1;border-radius:50%;background:var(--white);border:1.5px solid var(--border);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .14s;font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--text);user-select:none;}
+.mlk:active{transform:scale(.91);background:var(--rose-mid);border-color:var(--rose2);}
+.mlk.zero{grid-column:2;}.mlk.del{background:none;border-color:transparent;box-shadow:none;font-size:16px;}
+.pin-confirm-row{display:flex;gap:7px;margin-top:10px;}
+#admin-pill{background:var(--maize-lt);border:1.5px solid #f0d090;border-radius:18px;padding:5px 10px;font-size:12px;font-weight:700;color:#8a6010;cursor:pointer;display:none;align-items:center;gap:4px;}
+
 /* HEALTH RECORDS */
 .hrec{padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s;}
 .hrec:last-child{border-bottom:none;}
@@ -254,7 +278,7 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
 <div id="app">
   <div id="hdr">
     <div id="hdr-left"><div id="hdr-emoji">👶</div><div><div id="hdr-name">Baby Book</div><div id="hdr-sub">Family Tracker</div></div></div>
-    <div class="hdr-r"><div id="cg-pill" onclick="switchCG()"><span id="cgbadge">–</span> ✏️</div><div id="sdot"></div></div>
+    <div class="hdr-r"><div id="admin-pill" onclick="openAdmin()">👑 Admin</div><div id="cg-pill" onclick="switchCG()"><span id="cgbadge">–</span> ✏️</div><div id="sdot"></div></div>
   </div>
 
   <div id="content">
@@ -477,12 +501,175 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
   <div class="brow"><button class="btn btn-p" onclick="saveInfo('medAlerts')" style="flex:1;">Save Medical Alerts</button></div><div style="height:8px;"></div>
 </div></div>
 
+<!-- ══ ADMIN PANEL ══ -->
+<div id="admin-scr">
+  <div class="admin-hdr">
+    <div class="admin-title">👑 Dad's Admin Panel</div>
+    <div class="admin-close" onclick="closeAdmin()">✕</div>
+  </div>
+  <div class="admin-body">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6;">Set or reset each caregiver's PIN. You can see the PIN as you enter it. Tap <strong>Set PIN</strong> to save.</div>
+    <div id="admin-cg-list"></div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════════════
 //  PIN SYSTEM
 // ══════════════════════════════════════════════════
-const PKEY = 'bb_pin';
+const PKEY = 'bb_pin'; // legacy / global PIN key
+const DAD_NAME = 'Dad'; // the admin caregiver name
 let pinBuf = '', pinMode = 'unlock', pinFirst = '', sessionKey = '';
+
+function pinKeyFor(name) {
+  // returns the localStorage key for a given caregiver's PIN
+  return name ? 'bb_pin_' + name.toLowerCase().replace(/\s+/g,'_') : PKEY;
+}
+function hasPin(name) {
+  return !!localStorage.getItem(pinKeyFor(name));
+}
+function getActivePin(name) {
+  // Per-caregiver PIN if set, else fall back to global PIN
+  return localStorage.getItem(pinKeyFor(name)) || localStorage.getItem(PKEY);
+}
+
+// Admin state
+let adminTargetCG = '';
+let adminPinBuf = '';
+let adminPinFirst = '';
+let adminPinStage = ''; // 'enter1' | 'enter2'
+
+function openAdmin() {
+  renderAdminList();
+  document.getElementById('admin-scr').classList.add('open');
+}
+function closeAdmin() {
+  document.getElementById('admin-scr').classList.remove('open');
+}
+
+function renderAdminList() {
+  const list = document.getElementById('admin-cg-list');
+  list.innerHTML = caregivers.map(name => {
+    const isSet = hasPin(name);
+    const isDad = name === DAD_NAME;
+    return `
+    <div class="cg-row" id="cgrow-${CSS.escape(name)}">
+      <div class="cg-row-hdr">
+        <div class="cg-row-name">
+          ${isDad ? '👑' : '👤'} ${name}
+          ${isDad ? '<span class="cg-row-badge">Admin</span>' : ''}
+          <span class="cg-row-badge ${isSet?'set':''}" id="badge-${CSS.escape(name)}">${isSet ? 'PIN set ✓' : 'No PIN'}</span>
+        </div>
+        <button class="btn btn-s" style="font-size:12px;padding:6px 11px;" onclick="startAdminPin('${name.replace(/'/g,"\\'")}')">
+          ${isSet ? '🔄 Change' : '🔐 Set PIN'}
+        </button>
+      </div>
+      <div class="cg-pin-area" id="pinarea-${CSS.escape(name)}" style="display:none;">
+        <div class="cg-pin-label" id="pinlabel-${CSS.escape(name)}">Enter new 4-digit PIN for ${name}</div>
+        <div class="cg-pin-display ${adminTargetCG===name&&adminPinBuf?'':'empty'}" id="pindisplay-${CSS.escape(name)}">
+          ${adminTargetCG===name && adminPinBuf ? adminPinBuf : 'Enter PIN below'}
+        </div>
+        <div class="admin-mini-pad">
+          ${[1,2,3,4,5,6,7,8,9].map(n=>`<div class="mlk" onclick="adminPadPress('${name.replace(/'/g,"\\'")}','${n}')">${n}</div>`).join('')}
+          <div class="mlk zero" onclick="adminPadPress('${name.replace(/'/g,"\\'")}','0')">0</div>
+          <div class="mlk del" onclick="adminPadDel('${name.replace(/'/g,"\\'")}')">⌫</div>
+        </div>
+        <div class="pin-confirm-row" style="margin-top:12px;">
+          <button class="btn btn-d" onclick="cancelAdminPin('${name.replace(/'/g,"\\'")}')">Cancel</button>
+          ${isSet ? `<button class="btn btn-d" style="background:var(--rose-lt);" onclick="removePin('${name.replace(/'/g,"\\'")}')">Remove PIN</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function startAdminPin(name) {
+  // Close any open pad first
+  if (adminTargetCG && adminTargetCG !== name) {
+    const prevArea = document.getElementById('pinarea-' + CSS.escape(adminTargetCG));
+    if (prevArea) prevArea.style.display = 'none';
+  }
+  adminTargetCG = name;
+  adminPinBuf = '';
+  adminPinFirst = '';
+  adminPinStage = 'enter1';
+  const area = document.getElementById('pinarea-' + CSS.escape(name));
+  if (area) area.style.display = 'block';
+  updateAdminPinDisplay(name);
+  setAdminLabel(name, `Enter new 4-digit PIN for ${name}`);
+}
+
+function cancelAdminPin(name) {
+  adminTargetCG = '';
+  adminPinBuf = '';
+  adminPinFirst = '';
+  adminPinStage = '';
+  const area = document.getElementById('pinarea-' + CSS.escape(name));
+  if (area) area.style.display = 'none';
+}
+
+function adminPadPress(name, digit) {
+  if (adminTargetCG !== name) return;
+  if (adminPinBuf.length >= 4) return;
+  adminPinBuf += digit;
+  updateAdminPinDisplay(name);
+  if (adminPinBuf.length === 4) setTimeout(() => adminPinConfirm(name), 180);
+}
+
+function adminPadDel(name) {
+  if (adminTargetCG !== name) return;
+  adminPinBuf = adminPinBuf.slice(0, -1);
+  updateAdminPinDisplay(name);
+}
+
+function updateAdminPinDisplay(name) {
+  const el = document.getElementById('pindisplay-' + CSS.escape(name));
+  if (!el) return;
+  if (adminPinBuf) {
+    el.className = 'cg-pin-display';
+    el.textContent = adminPinBuf.split('').map((_,i) => i < adminPinBuf.length ? adminPinBuf[i] : '·').join(' ');
+  } else {
+    el.className = 'cg-pin-display empty';
+    el.textContent = 'Enter PIN below';
+  }
+}
+
+function setAdminLabel(name, txt) {
+  const el = document.getElementById('pinlabel-' + CSS.escape(name));
+  if (el) el.textContent = txt;
+}
+
+async function adminPinConfirm(name) {
+  if (adminPinStage === 'enter1') {
+    adminPinFirst = adminPinBuf;
+    adminPinBuf = '';
+    adminPinStage = 'enter2';
+    updateAdminPinDisplay(name);
+    setAdminLabel(name, `Confirm PIN for ${name}`);
+  } else if (adminPinStage === 'enter2') {
+    if (adminPinBuf === adminPinFirst) {
+      const h = await sha(adminPinBuf);
+      localStorage.setItem(pinKeyFor(name), h);
+      toast(`✅ PIN set for ${name}`);
+      cancelAdminPin(name);
+      renderAdminList(); // refresh badges
+    } else {
+      adminPinBuf = '';
+      adminPinFirst = '';
+      adminPinStage = 'enter1';
+      updateAdminPinDisplay(name);
+      setAdminLabel(name, `PINs didn't match — try again for ${name}`);
+    }
+  }
+}
+
+function removePin(name) {
+  if (!confirm(`Remove PIN for ${name}? They will only need the global PIN to access.`)) return;
+  localStorage.removeItem(pinKeyFor(name));
+  toast(`🗑️ PIN removed for ${name}`);
+  cancelAdminPin(name);
+  renderAdminList();
+}
 
 async function sha(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
@@ -513,12 +700,13 @@ function lkb() { pinBuf=pinBuf.slice(0,-1); updDots(); document.getElementById('
 function updDots() { for(let i=0;i<4;i++) document.getElementById('ld'+i).className='ld'+(i<pinBuf.length?' on':''); }
 
 async function procPin() {
-  const stored=localStorage.getItem(PKEY);
+  const stored = getActivePin(pendingCG); // check per-CG or global
   if (pinMode==='unlock') {
     if (await sha(pinBuf)===stored) {
       sessionKey=pinBuf; pinBuf=''; updDots();
       document.getElementById('lock').style.display='none';
-      showCgScr();
+      if (pendingCG) { caregiver=pendingCG; localStorage.setItem('bb_cg',pendingCG); pendingCG=''; launch(); }
+      else showCgScr();
     } else { pinBuf=''; updDots(); document.getElementById('lerr').textContent='Incorrect PIN. Try again.'; }
   } else if (pinMode==='setup1'||pinMode==='chg1') {
     pinFirst=pinBuf; pinBuf=''; updDots();
@@ -562,6 +750,7 @@ function initLock() {
 //  STATE
 // ══════════════════════════════════════════════════
 let caregiver='', caregivers=['Mom','Dad','Grandma','Grandpa','Nanny'];
+let pendingCG = ''; // used when a CG has their own PIN and needs to unlock
 let allEntries={}, healthRecs={}, growthRecs={}, motorRecs={}, milestones={};
 let babyProfile={}, birthInfo={}, medAlerts={};
 let fbOK=false;
@@ -698,13 +887,38 @@ function showCgScr(){
 function buildCgGrid(){
   document.getElementById('cg-grid').innerHTML=caregivers.map(n=>`<div class="cg-chip" onclick="selCG('${n}')">${n}</div>`).join('');
 }
-function selCG(name){caregiver=name;localStorage.setItem('bb_cg',name);document.getElementById('cg-scr').style.display='none';launch();}
+function selCG(name) {
+  // If this caregiver has their own PIN, require it before launching
+  if (hasPin(name)) {
+    pendingCG = name;
+    document.getElementById('cg-scr').style.display = 'none';
+    document.getElementById('lock').style.display = 'flex';
+    document.getElementById('ltitle').textContent = `Hello, ${name}!`;
+    document.getElementById('lsub').textContent = 'Enter your PIN to continue';
+    document.getElementById('lerr').textContent = '';
+    document.getElementById('lhint').textContent = '';
+    pinMode = 'unlock'; pinBuf = ''; updDots();
+    return;
+  }
+  // No per-CG PIN — launch directly
+  caregiver=name; localStorage.setItem('bb_cg',name); document.getElementById('cg-scr').style.display='none'; launch();
+}
 function cgAddNew(){const v=document.getElementById('cg-inp').value.trim();if(!v)return;if(!caregivers.includes(v)){caregivers.push(v);fbSet('caregivers',caregivers);}document.getElementById('cg-inp').value='';selCG(v);}
-function switchCG(){localStorage.removeItem('bb_cg');document.getElementById('app').style.display='none';document.getElementById('cg-scr').style.display='flex';buildCgGrid();}
+function switchCG(){
+  localStorage.removeItem('bb_cg');
+  document.getElementById('app').style.display='none';
+  const adminPill = document.getElementById('admin-pill');
+  if (adminPill) adminPill.style.display = 'none';
+  document.getElementById('cg-scr').style.display='flex';
+  buildCgGrid();
+}
 
 function launch(){
   document.getElementById('app').style.display='flex';
   document.getElementById('cgbadge').textContent=caregiver;
+  // Show admin panel button only for Dad
+  const adminPill = document.getElementById('admin-pill');
+  if (adminPill) adminPill.style.display = (caregiver === DAD_NAME) ? 'flex' : 'none';
   if(!isFB())document.getElementById('demo-banner').style.display='block';
   fbOK=isFB();
   startListen();
