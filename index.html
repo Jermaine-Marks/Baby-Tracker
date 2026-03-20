@@ -238,6 +238,78 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
 .empty{text-align:center;padding:24px 16px;}
 .ei{font-size:36px;margin-bottom:8px;}
 .et{font-size:13px;color:var(--text3);line-height:1.6;}
+
+/* ═══ LEAPS PAGE ═══ */
+:root{
+  --leap1:#e85d8a; --leap2:#9b72b0; --leap3:#5a9fd4; --leap4:#6baa8e;
+  --leap5:#e8a93c; --leap6:#f07050; --leap7:#4a9b8a; --leap8:#8a72b0; --leap9:#d45a6a; --leap10:#5a7ab0;
+}
+.leap-setup-card{background:linear-gradient(135deg,var(--rose-lt),var(--plum-lt));border:1.5px solid var(--rose-mid);border-radius:var(--r-lg);padding:20px;margin-bottom:14px;text-align:center;}
+.leap-setup-title{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.leap-setup-sub{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5;}
+.leap-hero{background:linear-gradient(135deg,#1a0a2e 0%,#2d1258 50%,#0a1a3e 100%);border-radius:var(--r-lg);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.leap-hero::before{content:'✨';position:absolute;font-size:80px;opacity:.07;right:-10px;top:-10px;}
+.leap-hero-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.leap-hero-name{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+.leap-hero-week{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px;}
+.leap-progress-bar{background:rgba(255,255,255,.15);border-radius:6px;height:8px;overflow:hidden;margin-bottom:8px;}
+.leap-progress-fill{height:100%;border-radius:6px;transition:width .6s ease;}
+.leap-progress-label{font-size:11px;color:rgba(255,255,255,.6);display:flex;justify-content:space-between;}
+.leap-status-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:14px;font-size:11px;font-weight:700;margin-top:8px;}
+.leap-status-chip.stormy{background:rgba(232,99,122,.25);color:#f8a0b5;border:1px solid rgba(232,99,122,.3);}
+.leap-status-chip.sunny{background:rgba(107,170,142,.25);color:#8dd4b0;border:1px solid rgba(107,170,142,.3);}
+.leap-status-chip.upcoming{background:rgba(90,159,212,.25);color:#8dc4e8;border:1px solid rgba(90,159,212,.3);}
+.leap-status-chip.between{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);}
+.leap-timeline{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.leap-card{border-radius:var(--r-md);border:1.5px solid var(--border);background:var(--white);overflow:hidden;box-shadow:var(--sh);transition:all .2s;}
+.leap-card.active{border-color:var(--rose);box-shadow:0 4px 20px rgba(232,99,122,.18);}
+.leap-card.complete{opacity:.7;}
+.leap-card-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+.leap-card-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;font-weight:700;color:#fff;}
+.leap-card-info{flex:1;min-width:0;}
+.leap-card-name{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--text);}
+.leap-card-week{font-size:11px;color:var(--text3);margin-top:1px;}
+.leap-card-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0;}
+.leap-card-body{padding:0 14px 14px;display:none;}
+.leap-card.open .leap-card-body{display:block;}
+.leap-card-chevron{font-size:14px;color:var(--text4);transition:transform .2s;flex-shrink:0;}
+.leap-card.open .leap-card-chevron{transform:rotate(180deg);}
+.signals-list{margin-bottom:10px;}
+.signal-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.4;}
+.signal-item:last-child{border-bottom:none;}
+.signal-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.signal-check.on{background:var(--rose);border-color:var(--rose);color:#fff;}
+.skills-section{margin-top:10px;}
+.skills-section-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:7px;}
+.skill-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.skill-chip{padding:8px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--cream);font-size:11.5px;color:var(--text2);cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:6px;font-weight:500;}
+.skill-chip:active{transform:scale(.97);}
+.skill-chip.discovered{background:var(--sage-lt);border-color:#b2dfc9;color:#2e6e4e;}
+.skill-chip .sk-icon{font-size:14px;flex-shrink:0;}
+.diary-section{margin-top:10px;}
+.diary-entry-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);}
+.diary-entry-item:last-child{border-bottom:none;}
+.diary-entry-date{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:2px;}
+.leap-notify-card{background:linear-gradient(135deg,var(--plum-lt),#ede0ff);border:1.5px solid #cbb8dc;border-radius:var(--r-lg);padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;}
+.leap-notify-icon{font-size:28px;flex-shrink:0;}
+.leap-notify-title{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--plum);margin-bottom:3px;}
+.leap-notify-sub{font-size:12px;color:var(--text2);line-height:1.4;}
+.leap-notify-dismiss{font-size:11px;color:var(--text3);font-weight:600;margin-top:6px;cursor:pointer;text-decoration:underline;}
+.adjust-btn{font-size:11px;color:var(--sky);font-weight:600;cursor:pointer;padding:2px 6px;border:1px solid var(--sky-lt);border-radius:8px;background:var(--sky-lt);margin-left:6px;}
+/* Leap color dots */
+.lc1{background:var(--leap1);} .lc2{background:var(--leap2);} .lc3{background:var(--leap3);}
+.lc4{background:var(--leap4);} .lc5{background:var(--leap5);} .lc6{background:var(--leap6);}
+.lc7{background:var(--leap7);} .lc8{background:var(--leap8);} .lc9{background:var(--leap9);} .lc10{background:var(--leap10);}
+.lb1{background:rgba(232,93,138,.15);color:#c03a65;border-color:rgba(232,93,138,.3);}
+.lb2{background:rgba(155,114,176,.15);color:#7a4d9a;border-color:rgba(155,114,176,.3);}
+.lb3{background:rgba(90,159,212,.15);color:#2e6898;border-color:rgba(90,159,212,.3);}
+.lb4{background:rgba(107,170,142,.15);color:#2e6e4e;border-color:rgba(107,170,142,.3);}
+.lb5{background:rgba(232,169,60,.15);color:#8a6010;border-color:rgba(232,169,60,.3);}
+.lb6{background:rgba(240,112,80,.15);color:#a03820;border-color:rgba(240,112,80,.3);}
+.lb7{background:rgba(74,155,138,.15);color:#1e5e52;border-color:rgba(74,155,138,.3);}
+.lb8{background:rgba(138,114,176,.15);color:#5a3a9a;border-color:rgba(138,114,176,.3);}
+.lb9{background:rgba(212,90,106,.15);color:#8a2a3a;border-color:rgba(212,90,106,.3);}
+.lb10{background:rgba(90,122,176,.15);color:#2a4a8a;border-color:rgba(90,122,176,.3);}
 </style>
 </head>
 <body>
@@ -337,6 +409,27 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
       <div style="height:80px;"></div>
     </div>
 
+    <!-- LEAPS -->
+    <div class="page" id="pg-leaps">
+      <div id="leaps-setup-banner" style="display:none;">
+        <div class="leap-setup-card">
+          <div style="font-size:40px;margin-bottom:10px;">🌀</div>
+          <div class="leap-setup-title">Baby Leaps Tracker</div>
+          <div class="leap-setup-sub">Set your baby's due date or birth date to get a personalized leap schedule based on the Wonder Weeks research.</div>
+          <button class="btn btn-p" onclick="openM('m-leap-setup')" style="max-width:220px;margin:0 auto;">Set Baby's Date</button>
+        </div>
+      </div>
+      <div id="leaps-notify-banner" style="display:none;"></div>
+      <div id="leaps-hero" style="display:none;"></div>
+      <div id="leaps-adjust-row" style="display:none;margin-bottom:10px;display:none;align-items:center;justify-content:flex-end;">
+        <span style="font-size:11px;color:var(--text3);">Leap progress</span>
+        <span class="adjust-btn" onclick="openM('m-leap-adjust')">⚙️ Adjust</span>
+      </div>
+      <div class="sl" id="leaps-tl-label" style="display:none;">Your Leap Schedule</div>
+      <div class="leap-timeline" id="leaps-timeline"></div>
+      <div style="height:80px;"></div>
+    </div>
+
     <!-- HISTORY -->
     <div class="page" id="pg-hist">
       <div class="card" style="margin-bottom:12px;">
@@ -385,6 +478,7 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
   <nav id="nav">
     <button class="nb active" onclick="showPg('today',this)"><div class="ni">🏠</div>Today</button>
     <button class="nb" onclick="showPg('health',this)"><div class="ni">🏥</div>Health</button>
+    <button class="nb" onclick="showPg('leaps',this)"><div class="ni">🌀</div>Leaps</button>
     <button class="nb" onclick="showPg('motor',this)"><div class="ni">🌟</div>Milestones</button>
     <button class="nb" onclick="showPg('hist',this)"><div class="ni">📅</div>History</button>
     <button class="nb" onclick="showPg('info',this)"><div class="ni">👶</div>Profile</button>
@@ -505,6 +599,31 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
   <div class="ig"><div class="il">Emergency Contact</div><input class="ifield" id="ma-emerg" placeholder="Name and phone number"></div>
   <div class="ig"><div class="il">Additional Notes</div><textarea class="ifield" id="ma-notes" rows="2" placeholder="Any other important medical info…"></textarea></div>
   <div class="brow"><button class="btn btn-p" onclick="saveInfo('medAlerts')" style="flex:1;">Save Medical Alerts</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-leap-setup"><div class="modal"><div class="mh"></div><div class="mt">🌀 Set Up Leaps</div>
+  <div class="ig"><div class="il">Baby's Due Date</div><input class="ifield" type="date" id="ls-due" placeholder="Due date"></div>
+  <div class="ig"><div class="il">Actual Birth Date</div><input class="ifield" type="date" id="ls-born" placeholder="Birth date"></div>
+  <div style="padding:0 20px;margin-bottom:14px;font-size:12px;color:var(--text3);line-height:1.5;">Leaps are calculated from the <strong>due date</strong> for accuracy. If born on time, they're the same. Enter both if premature or late.</div>
+  <div class="brow"><button class="btn btn-p" onclick="saveLeapSetup()" style="flex:1;">Start Tracking Leaps 🌀</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-leap-adjust"><div class="modal"><div class="mh"></div><div class="mt">Adjust Leap Progress</div>
+  <div style="padding:0 20px;margin-bottom:14px;font-size:12px;color:var(--text3);line-height:1.5;">If your baby seems ahead or behind a leap, shift the schedule. This personalizes timing based on observed progress.</div>
+  <div class="ig"><div class="il">Shift Schedule (weeks)</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+      <button class="btn btn-s" onclick="adjLeap(-1)" style="padding:8px 14px;font-size:18px;">-</button>
+      <div id="adj-display" style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--rose);min-width:50px;text-align:center;">0</div>
+      <button class="btn btn-s" onclick="adjLeap(1)" style="padding:8px 14px;font-size:18px;">+</button>
+    </div>
+  </div>
+  <div class="brow"><button class="btn btn-p" onclick="saveLeapAdj()" style="flex:1;">Save Adjustment</button></div><div style="height:8px;"></div>
+</div></div>
+
+<div class="ov" id="m-leap-diary"><div class="modal"><div class="mh"></div><div class="mt" id="m-leap-diary-title">Leap Diary</div>
+  <div class="ig"><div class="il">What did you observe?</div><textarea class="ifield" id="ld-note" rows="4" placeholder="Describe a new skill, funny moment, or breakthrough..."></textarea></div>
+  <div class="ig"><div class="il">Date</div><input class="ifield" type="date" id="ld-date"></div>
+  <div class="brow"><button class="btn btn-p" onclick="saveLeapDiary()" style="flex:1;">Save to Diary</button></div><div style="height:8px;"></div>
 </div></div>
 
 <!-- ══ ADMIN PANEL ══ -->
@@ -762,30 +881,363 @@ let babyProfile={}, birthInfo={}, medAlerts={};
 let fbOK=false;
 
 const MS_LIST=[
-  {id:'ms1', lbl:'Lifts head during tummy time',       age:'1-2 mo',  cat:'Gross Motor'},
-  {id:'ms2', lbl:'First social smile',                 age:'1-2 mo',  cat:'Social'},
-  {id:'ms3', lbl:'Tracks objects with eyes',           age:'2 mo',    cat:'Cognitive'},
-  {id:'ms4', lbl:'Coos and makes sounds',              age:'2-3 mo',  cat:'Language'},
-  {id:'ms5', lbl:'Holds head steady',                  age:'3-4 mo',  cat:'Gross Motor'},
-  {id:'ms6', lbl:'Reaches for objects',                age:'3-4 mo',  cat:'Fine Motor'},
-  {id:'ms7', lbl:'Rolls front to back',                age:'4 mo',    cat:'Gross Motor'},
-  {id:'ms8', lbl:'Laughs out loud',                    age:'4 mo',    cat:'Social'},
-  {id:'ms9', lbl:'Rolls back to front',                age:'5-6 mo',  cat:'Gross Motor'},
-  {id:'ms10',lbl:'Sits with support',                  age:'5-6 mo',  cat:'Gross Motor'},
-  {id:'ms11',lbl:'Passes objects hand to hand',        age:'6-7 mo',  cat:'Fine Motor'},
-  {id:'ms12',lbl:'Sits without support',               age:'6-8 mo',  cat:'Gross Motor'},
-  {id:'ms13',lbl:'Babbles (mama/dada sounds)',         age:'6-9 mo',  cat:'Language'},
-  {id:'ms14',lbl:'Pincer grasp (thumb & finger)',      age:'9 mo',    cat:'Fine Motor'},
-  {id:'ms15',lbl:'Pulls to stand',                     age:'9-10 mo', cat:'Gross Motor'},
-  {id:'ms16',lbl:'Waves bye-bye',                      age:'9-10 mo', cat:'Social'},
-  {id:'ms17',lbl:'Cruises along furniture',            age:'10-11 mo',cat:'Gross Motor'},
-  {id:'ms18',lbl:'Says first word',                    age:'12 mo',   cat:'Language'},
-  {id:'ms19',lbl:'First steps',                        age:'12 mo',   cat:'Gross Motor'},
-  {id:'ms20',lbl:'Points to objects',                  age:'12 mo',   cat:'Cognitive'},
-  {id:'ms21',lbl:'Stacks two blocks',                  age:'12-14 mo',cat:'Fine Motor'},
-  {id:'ms22',lbl:'Walks well independently',           age:'14-15 mo',cat:'Gross Motor'},
-  {id:'ms23',lbl:'Says 2-word phrases',                age:'18-24 mo',cat:'Language'},
-  {id:'ms24',lbl:'Runs',                               age:'18 mo',   cat:'Gross Motor'},
+  // ── LEAP 1 skills (5 weeks) ──
+  {id:'ms1', lbl:'Lifts head during tummy time',age:'1-2 mo',cat:'Gross Motor'},
+  {id:'ms2', lbl:'First social smile',age:'1-2 mo',cat:'Social'},
+  {id:'ms3', lbl:'Tracks objects with eyes',age:'2 mo',cat:'Cognitive'},
+  {id:'ms4', lbl:'Coos and makes sounds',age:'2-3 mo',cat:'Language'},
+  {id:'ms5', lbl:'Responds to familiar voices',age:'1 mo',cat:'Social'},
+  {id:'ms6', lbl:'Startles at loud sounds',age:'1 mo',cat:'Cognitive'},
+  {id:'ms7', lbl:'Stares at faces intently',age:'1 mo',cat:'Social'},
+  {id:'ms8', lbl:'Makes eye contact',age:'1-2 mo',cat:'Social'},
+  // ── LEAP 2 skills (8 weeks) ──
+  {id:'ms9', lbl:'Holds head steady',age:'3-4 mo',cat:'Gross Motor'},
+  {id:'ms10',lbl:'Reaches for objects',age:'3-4 mo',cat:'Fine Motor'},
+  {id:'ms11',lbl:'Recognizes patterns',age:'2 mo',cat:'Cognitive'},
+  {id:'ms12',lbl:'Notices contrasting colors',age:'2 mo',cat:'Cognitive'},
+  {id:'ms13',lbl:'Watches moving objects',age:'2 mo',cat:'Cognitive'},
+  {id:'ms14',lbl:'Swipes at hanging toys',age:'2-3 mo',cat:'Fine Motor'},
+  {id:'ms15',lbl:'Holds objects briefly',age:'2-3 mo',cat:'Fine Motor'},
+  {id:'ms16',lbl:'Smiles in response to smile',age:'2 mo',cat:'Social'},
+  // ── LEAP 3 skills (12 weeks) ──
+  {id:'ms17',lbl:'Rolls front to back',age:'4 mo',cat:'Gross Motor'},
+  {id:'ms18',lbl:'Laughs out loud',age:'4 mo',cat:'Social'},
+  {id:'ms19',lbl:'Blows raspberries / bubbles',age:'3-4 mo',cat:'Language'},
+  {id:'ms20',lbl:'Transfers object hand to hand',age:'3-4 mo',cat:'Fine Motor'},
+  {id:'ms21',lbl:'Grabs own feet',age:'4 mo',cat:'Gross Motor'},
+  {id:'ms22',lbl:'Vocalizes excitement',age:'3-4 mo',cat:'Language'},
+  {id:'ms23',lbl:'Mirrors facial expressions',age:'3-4 mo',cat:'Social'},
+  {id:'ms24',lbl:'Responds to own name',age:'4 mo',cat:'Language'},
+  {id:'ms25',lbl:'Shows preference for familiar faces',age:'3-4 mo',cat:'Social'},
+  // ── LEAP 4 skills (19 weeks) ──
+  {id:'ms26',lbl:'Rolls back to front',age:'5-6 mo',cat:'Gross Motor'},
+  {id:'ms27',lbl:'Sits with support',age:'5-6 mo',cat:'Gross Motor'},
+  {id:'ms28',lbl:'Passes objects hand to hand',age:'6-7 mo',cat:'Fine Motor'},
+  {id:'ms29',lbl:'Bounces when held standing',age:'5-6 mo',cat:'Gross Motor'},
+  {id:'ms30',lbl:'Babbles simple sounds (ba, ma)',age:'5-6 mo',cat:'Language'},
+  {id:'ms31',lbl:'Shows clear interest in food',age:'5-6 mo',cat:'Social'},
+  {id:'ms32',lbl:'Reaches with both arms',age:'5 mo',cat:'Fine Motor'},
+  {id:'ms33',lbl:'Bangs objects together',age:'6 mo',cat:'Fine Motor'},
+  {id:'ms34',lbl:'Bears weight on legs',age:'5-6 mo',cat:'Gross Motor'},
+  {id:'ms35',lbl:'Turns to sound source',age:'5-6 mo',cat:'Cognitive'},
+  {id:'ms36',lbl:'Pushes up on hands during tummy time',age:'5 mo',cat:'Gross Motor'},
+  {id:'ms37',lbl:'Explores objects with mouth',age:'5-6 mo',cat:'Cognitive'},
+  // ── LEAP 5 skills (26 weeks) ──
+  {id:'ms38',lbl:'Sits without support',age:'6-8 mo',cat:'Gross Motor'},
+  {id:'ms39',lbl:'Babbles (mama/dada sounds)',age:'6-9 mo',cat:'Language'},
+  {id:'ms40',lbl:'First solid food reaction',age:'6 mo',cat:'Social'},
+  {id:'ms41',lbl:'Shows stranger anxiety',age:'6-8 mo',cat:'Social'},
+  {id:'ms42',lbl:'Bangs cup on table',age:'7 mo',cat:'Fine Motor'},
+  {id:'ms43',lbl:'Imitates sounds',age:'6-8 mo',cat:'Language'},
+  {id:'ms44',lbl:'Plays peekaboo',age:'7-8 mo',cat:'Social'},
+  {id:'ms45',lbl:'Picks up small objects with fingers',age:'7-8 mo',cat:'Fine Motor'},
+  {id:'ms46',lbl:'Pulls self to sitting',age:'7-8 mo',cat:'Gross Motor'},
+  {id:'ms47',lbl:'Reaches for out-of-reach objects',age:'7 mo',cat:'Cognitive'},
+  {id:'ms48',lbl:'Plays with own reflection',age:'6-7 mo',cat:'Social'},
+  {id:'ms49',lbl:'Understands "no"',age:'8 mo',cat:'Cognitive'},
+  {id:'ms50',lbl:'Searches for hidden object (object permanence)',age:'8 mo',cat:'Cognitive'},
+  {id:'ms51',lbl:'Holds bottle / cup independently',age:'7-8 mo',cat:'Fine Motor'},
+  // ── LEAP 6 skills (37 weeks) ──
+  {id:'ms52',lbl:'Pincer grasp (thumb & finger)',age:'9 mo',cat:'Fine Motor'},
+  {id:'ms53',lbl:'Pulls to stand',age:'9-10 mo',cat:'Gross Motor'},
+  {id:'ms54',lbl:'Waves bye-bye',age:'9-10 mo',cat:'Social'},
+  {id:'ms55',lbl:'Points to objects',age:'9-10 mo',cat:'Cognitive'},
+  {id:'ms56',lbl:'Cruises along furniture',age:'10-11 mo',cat:'Gross Motor'},
+  {id:'ms57',lbl:'Responds to simple commands',age:'9-10 mo',cat:'Language'},
+  {id:'ms58',lbl:'Imitates actions (clap, wave)',age:'9-10 mo',cat:'Social'},
+  {id:'ms59',lbl:'Uses gestures to communicate',age:'9-10 mo',cat:'Language'},
+  {id:'ms60',lbl:'Shows objects to others',age:'9-10 mo',cat:'Social'},
+  {id:'ms61',lbl:'Drops objects intentionally',age:'9 mo',cat:'Cognitive'},
+  {id:'ms62',lbl:'Puts objects in container',age:'9-10 mo',cat:'Fine Motor'},
+  {id:'ms63',lbl:'Stands momentarily without support',age:'10-11 mo',cat:'Gross Motor'},
+  {id:'ms64',lbl:'Claps hands',age:'9-10 mo',cat:'Fine Motor'},
+  {id:'ms65',lbl:'Bangs two objects together purposefully',age:'9-10 mo',cat:'Fine Motor'},
+  {id:'ms66',lbl:'Feeds self finger foods',age:'9-10 mo',cat:'Fine Motor'},
+  // ── LEAP 7 skills (46 weeks) ──
+  {id:'ms67',lbl:'Says first word',age:'12 mo',cat:'Language'},
+  {id:'ms68',lbl:'First steps independently',age:'12 mo',cat:'Gross Motor'},
+  {id:'ms69',lbl:'Stacks two blocks',age:'12-14 mo',cat:'Fine Motor'},
+  {id:'ms70',lbl:'Walks holding one hand',age:'11-12 mo',cat:'Gross Motor'},
+  {id:'ms71',lbl:'Understands 10+ words',age:'12 mo',cat:'Language'},
+  {id:'ms72',lbl:'Uses "mama" and "dada" correctly',age:'12 mo',cat:'Language'},
+  {id:'ms73',lbl:'Gives and takes objects',age:'12 mo',cat:'Social'},
+  {id:'ms74',lbl:'Points to body parts',age:'12 mo',cat:'Cognitive'},
+  {id:'ms75',lbl:'Helps with dressing (lifts arm)',age:'12 mo',cat:'Social'},
+  {id:'ms76',lbl:'Imitates play actions',age:'12 mo',cat:'Social'},
+  {id:'ms77',lbl:'Uses spoon or fork (messily)',age:'12-14 mo',cat:'Fine Motor'},
+  {id:'ms78',lbl:'Drinks from cup',age:'12 mo',cat:'Fine Motor'},
+  {id:'ms79',lbl:'Squats down and stands up',age:'12 mo',cat:'Gross Motor'},
+  {id:'ms80',lbl:'Throws ball',age:'12-13 mo',cat:'Gross Motor'},
+  {id:'ms81',lbl:'Understands object use (brush for hair)',age:'12 mo',cat:'Cognitive'},
+  // ── LEAP 8 skills (55 weeks) ──
+  {id:'ms82',lbl:'Walks well independently',age:'14-15 mo',cat:'Gross Motor'},
+  {id:'ms83',lbl:'Says 2-word phrases',age:'18-24 mo',cat:'Language'},
+  {id:'ms84',lbl:'Runs',age:'18 mo',cat:'Gross Motor'},
+  {id:'ms85',lbl:'Stacks 3-4 blocks',age:'15-18 mo',cat:'Fine Motor'},
+  {id:'ms86',lbl:'Scribbles with crayon',age:'15 mo',cat:'Fine Motor'},
+  {id:'ms87',lbl:'Vocabulary of 5+ words',age:'15 mo',cat:'Language'},
+  {id:'ms88',lbl:'Points to pictures in book',age:'15 mo',cat:'Cognitive'},
+  {id:'ms89',lbl:'Follows 2-step instructions',age:'15-18 mo',cat:'Cognitive'},
+  {id:'ms90',lbl:'Pretend play begins',age:'15-18 mo',cat:'Social'},
+  {id:'ms91',lbl:'Climbs onto furniture',age:'15-18 mo',cat:'Gross Motor'},
+  {id:'ms92',lbl:'Removes shoes and socks',age:'15-18 mo',cat:'Fine Motor'},
+  {id:'ms93',lbl:'Waves and blows kisses',age:'15 mo',cat:'Social'},
+  {id:'ms94',lbl:'Shows empathy (hugs upset friend)',age:'15-18 mo',cat:'Social'},
+  {id:'ms95',lbl:'Sorts shapes and colors',age:'18 mo',cat:'Cognitive'},
+  {id:'ms96',lbl:'Carries large objects while walking',age:'14-15 mo',cat:'Gross Motor'},
+  // ── LEAP 9 skills (64 weeks) ──
+  {id:'ms97',lbl:'Vocabulary of 20+ words',age:'18 mo',cat:'Language'},
+  {id:'ms98',lbl:'Names objects in picture books',age:'18 mo',cat:'Language'},
+  {id:'ms99',lbl:'Walks up stairs (with help)',age:'18-24 mo',cat:'Gross Motor'},
+  {id:'ms100',lbl:'Kicks a ball',age:'18 mo',cat:'Gross Motor'},
+  {id:'ms101',lbl:'Stacks 6+ blocks',age:'18-24 mo',cat:'Fine Motor'},
+  {id:'ms102',lbl:'Copies simple drawings (line)',age:'18-24 mo',cat:'Fine Motor'},
+  {id:'ms103',lbl:'Plays alongside other children (parallel play)',age:'18-24 mo',cat:'Social'},
+  {id:'ms104',lbl:'Starts to show defiance ("no!")',age:'18 mo',cat:'Social'},
+  {id:'ms105',lbl:'Identifies body parts (nose, eyes, mouth)',age:'18 mo',cat:'Cognitive'},
+  {id:'ms106',lbl:'Engages in simple make-believe',age:'18-24 mo',cat:'Social'},
+  {id:'ms107',lbl:'Turns book pages',age:'18 mo',cat:'Fine Motor'},
+  {id:'ms108',lbl:'Washes hands (with help)',age:'18-24 mo',cat:'Social'},
+  {id:'ms109',lbl:'Runs smoothly',age:'18-24 mo',cat:'Gross Motor'},
+  {id:'ms110',lbl:'Throws ball overhand',age:'18-24 mo',cat:'Gross Motor'},
+  // ── LEAP 10 skills (75 weeks) ──
+  {id:'ms111',lbl:'Says 50+ words',age:'24 mo',cat:'Language'},
+  {id:'ms112',lbl:'Speaks in sentences (2-3 words)',age:'24 mo',cat:'Language'},
+  {id:'ms113',lbl:'Jumps with both feet',age:'24 mo',cat:'Gross Motor'},
+  {id:'ms114',lbl:'Rides push toy',age:'24 mo',cat:'Gross Motor'},
+  {id:'ms115',lbl:'Draws simple shapes',age:'24 mo',cat:'Fine Motor'},
+  {id:'ms116',lbl:'Sorts by color and shape',age:'24 mo',cat:'Cognitive'},
+  {id:'ms117',lbl:'Plays cooperatively with others',age:'24 mo',cat:'Social'},
+  {id:'ms118',lbl:'Shows understanding of "mine" vs "yours"',age:'24 mo',cat:'Social'},
+  {id:'ms119',lbl:'Follows 3-step instructions',age:'24 mo',cat:'Cognitive'},
+  {id:'ms120',lbl:'Begins toilet awareness',age:'24 mo',cat:'Social'},
+  {id:'ms121',lbl:'Counts to 2-3',age:'24 mo',cat:'Cognitive'},
+  {id:'ms122',lbl:'Names friends by name',age:'24 mo',cat:'Social'},
+  {id:'ms123',lbl:'Climbs well',age:'24 mo',cat:'Gross Motor'},
+  {id:'ms124',lbl:'Turns door handles',age:'24 mo',cat:'Fine Motor'},
+];
+
+// ══════════════════════════════════════════════════
+//  LEAPS DATA — based on Wonder Weeks research
+//  Week counts from due date (not birth date)
+// ══════════════════════════════════════════════════
+const LEAPS = [
+  {
+    n: 1, name: 'The World of Changing Sensations', emoji: '✨', colorClass: 'lc1', badgeClass: 'lb1',
+    stormWeek: 5, sunWeek: 6, endWeek: 7,
+    desc: 'Baby perceives the world differently — senses sharpen and become more refined.',
+    signals: ['More crying than usual','Wants to be held constantly','Fussier at the breast or bottle','Needs extra soothing','Sleeps poorly or erratically','Brightens up when stimulated'],
+    skills: [
+      {id:'lsk1-1', icon:'👀', lbl:'Notices new details in faces'},
+      {id:'lsk1-2', icon:'👂', lbl:'Startles at familiar sounds differently'},
+      {id:'lsk1-3', icon:'🤲', lbl:'Feels textures with new awareness'},
+      {id:'lsk1-4', icon:'👃', lbl:'Reacts to familiar scents (Mom)'},
+      {id:'lsk1-5', icon:'😮', lbl:'Opens mouth at breast smell'},
+      {id:'lsk1-6', icon:'🌟', lbl:'Briefly alert and focused'},
+      {id:'lsk1-7', icon:'😊', lbl:'First social smile emerging'},
+      {id:'lsk1-8', icon:'🔊', lbl:'Responds to soft voices'},
+    ]
+  },
+  {
+    n: 2, name: 'The World of Patterns', emoji: '🔷', colorClass: 'lc2', badgeClass: 'lb2',
+    stormWeek: 8, sunWeek: 10, endWeek: 12,
+    desc: 'Baby begins to perceive patterns — in sight, sound, smell, taste, and touch.',
+    signals: ['Wants extra cuddles','Cries more without obvious cause','More clingy','Fussy in the evening','Sleeps less','Bores easily — wants stimulation'],
+    skills: [
+      {id:'lsk2-1', icon:'👁️', lbl:'Follows a moving object with eyes'},
+      {id:'lsk2-2', icon:'🎵', lbl:'Turns head toward a sound'},
+      {id:'lsk2-3', icon:'🖐️', lbl:'Stares at own hands'},
+      {id:'lsk2-4', icon:'😄', lbl:'Smiles at familiar faces'},
+      {id:'lsk2-5', icon:'👂', lbl:'Recognizes Mom or Dad\'s voice'},
+      {id:'lsk2-6', icon:'🌈', lbl:'Prefers high-contrast patterns'},
+      {id:'lsk2-7', icon:'💤', lbl:'Shorter but more regular sleep cycles'},
+      {id:'lsk2-8', icon:'🗣️', lbl:'Coos in response to talking'},
+      {id:'lsk2-9', icon:'🤲', lbl:'Opens and closes hands'},
+      {id:'lsk2-10',icon:'😊', lbl:'Smiles spontaneously'},
+    ]
+  },
+  {
+    n: 3, name: 'The World of Smooth Transitions', emoji: '🌊', colorClass: 'lc3', badgeClass: 'lb3',
+    stormWeek: 12, sunWeek: 14, endWeek: 15,
+    desc: 'Baby discovers smooth, flowing changes — in movement, sound, vision, and emotions.',
+    signals: ['Crankiest leap yet for many','Clings to caregiver','Disturbed sleep','Fussy after feeds','May spit up more','Wants constant motion or rocking'],
+    skills: [
+      {id:'lsk3-1', icon:'🙃', lbl:'Makes smooth mouth movements'},
+      {id:'lsk3-2', icon:'😂', lbl:'Laughs out loud'},
+      {id:'lsk3-3', icon:'🤸', lbl:'Reaches and touches objects smoothly'},
+      {id:'lsk3-4', icon:'👀', lbl:'Tracks moving objects easily'},
+      {id:'lsk3-5', icon:'🗣️', lbl:'Makes long chains of sounds'},
+      {id:'lsk3-6', icon:'🎵', lbl:'Responds to music with body movement'},
+      {id:'lsk3-7', icon:'😍', lbl:'Recognizes when someone is happy or sad'},
+      {id:'lsk3-8', icon:'🖐️', lbl:'Swipes at objects intentionally'},
+      {id:'lsk3-9', icon:'😮', lbl:'Blows raspberries and bubbles'},
+      {id:'lsk3-10',icon:'💪', lbl:'Pushes up on arms during tummy time'},
+      {id:'lsk3-11',icon:'👶', lbl:'Rolls to the side'},
+    ]
+  },
+  {
+    n: 4, name: 'The World of Events', emoji: '⚡', colorClass: 'lc4', badgeClass: 'lb4',
+    stormWeek: 19, sunWeek: 22, endWeek: 26,
+    desc: 'Baby understands that things can happen in a sequence — the world is made up of events.',
+    signals: ['Clingy beyond anything before','Sleep regression','Demands constant attention','More tearful','Less interested in usual activities','Wants to be held standing'],
+    skills: [
+      {id:'lsk4-1', icon:'🎵', lbl:'Shakes a rattle to make sound'},
+      {id:'lsk4-2', icon:'🍼', lbl:'Reaches for the bottle'},
+      {id:'lsk4-3', icon:'😋', lbl:'Opens mouth when seeing food coming'},
+      {id:'lsk4-4', icon:'🙌', lbl:'Brings two objects together'},
+      {id:'lsk4-5', icon:'🎯', lbl:'Grabs for objects with purpose'},
+      {id:'lsk4-6', icon:'🗣️', lbl:'Babbles in syllables (ba-ba, ma-ma)'},
+      {id:'lsk4-7', icon:'😄', lbl:'Laughs at peekaboo'},
+      {id:'lsk4-8', icon:'🏋️', lbl:'Bears weight on legs when held'},
+      {id:'lsk4-9', icon:'🦶', lbl:'Kicks legs rhythmically'},
+      {id:'lsk4-10',icon:'🙃', lbl:'Rolls front to back'},
+      {id:'lsk4-11',icon:'🪑', lbl:'Sits briefly with support'},
+      {id:'lsk4-12',icon:'😃', lbl:'Shows excitement at familiar people'},
+      {id:'lsk4-13',icon:'👄', lbl:'Blows raspberries on command'},
+      {id:'lsk4-14',icon:'🤲', lbl:'Passes toy from hand to hand'},
+    ]
+  },
+  {
+    n: 5, name: 'The World of Relationships', emoji: '🔗', colorClass: 'lc5', badgeClass: 'lb5',
+    stormWeek: 26, sunWeek: 30, endWeek: 37,
+    desc: 'Baby grasps the concept of distance and relationships between things — and people.',
+    signals: ['Serious stranger anxiety','Separation anxiety begins','Very clingy with primary caregiver','Night wakings increase','May refuse new foods','Tests cause and effect constantly'],
+    skills: [
+      {id:'lsk5-1', icon:'🔍', lbl:'Searches for a hidden toy'},
+      {id:'lsk5-2', icon:'📦', lbl:'Drops things and watches where they fall'},
+      {id:'lsk5-3', icon:'🤱', lbl:'Reaches to be picked up'},
+      {id:'lsk5-4', icon:'📏', lbl:'Gauges distance with eyes before reaching'},
+      {id:'lsk5-5', icon:'😢', lbl:'Cries when caregiver leaves room'},
+      {id:'lsk5-6', icon:'👋', lbl:'Waves bye-bye'},
+      {id:'lsk5-7', icon:'🫳', lbl:'Lets go of objects purposefully'},
+      {id:'lsk5-8', icon:'🏃', lbl:'Crawls toward desired object'},
+      {id:'lsk5-9', icon:'🪑', lbl:'Sits independently and steadily'},
+      {id:'lsk5-10',icon:'🤏', lbl:'Developing pincer grasp'},
+      {id:'lsk5-11',icon:'🍽️', lbl:'Shows interest in self-feeding'},
+      {id:'lsk5-12',icon:'👁️', lbl:'Points to get something'},
+      {id:'lsk5-13',icon:'🗣️', lbl:'Babbles with varied pitch'},
+      {id:'lsk5-14',icon:'😎', lbl:'Plays peekaboo with caregiver'},
+      {id:'lsk5-15',icon:'🎯', lbl:'Puts smaller objects inside larger ones'},
+    ]
+  },
+  {
+    n: 6, name: 'The World of Categories', emoji: '🗂️', colorClass: 'lc6', badgeClass: 'lb6',
+    stormWeek: 37, sunWeek: 41, endWeek: 46,
+    desc: 'Baby sorts the world into categories — things, people, feelings all get organized mentally.',
+    signals: ['Tests limits more','More demanding','Throws more tantrums','Moody swings','Clingy with favorites','May develop new fears'],
+    skills: [
+      {id:'lsk6-1', icon:'👶', lbl:'Recognizes self in mirror'},
+      {id:'lsk6-2', icon:'🐶', lbl:'Identifies animals in pictures'},
+      {id:'lsk6-3', icon:'🎵', lbl:'Dances or moves to music'},
+      {id:'lsk6-4', icon:'🤲', lbl:'Pincer grasp fully formed'},
+      {id:'lsk6-5', icon:'🚶', lbl:'Cruises along furniture'},
+      {id:'lsk6-6', icon:'📚', lbl:'Points to pictures in books'},
+      {id:'lsk6-7', icon:'🎭', lbl:'Imitates adults (pretends to phone)'},
+      {id:'lsk6-8', icon:'🗣️', lbl:'Says 1-2 real words'},
+      {id:'lsk6-9', icon:'😤', lbl:'Shows frustration clearly'},
+      {id:'lsk6-10',icon:'🥣', lbl:'Feeds self finger foods'},
+      {id:'lsk6-11',icon:'🧸', lbl:'Has a favourite toy or object'},
+      {id:'lsk6-12',icon:'🚫', lbl:'Understands "no"'},
+      {id:'lsk6-13',icon:'✋', lbl:'Points with index finger'},
+      {id:'lsk6-14',icon:'👐', lbl:'Claps hands on command'},
+      {id:'lsk6-15',icon:'🏗️', lbl:'Stacks two objects'},
+    ]
+  },
+  {
+    n: 7, name: 'The World of Sequences', emoji: '🔢', colorClass: 'lc7', badgeClass: 'lb7',
+    stormWeek: 46, sunWeek: 50, endWeek: 55,
+    desc: 'Baby understands that some tasks require a series of steps in the right order.',
+    signals: ['Follows you everywhere','Tests what they can and cannot do','Deliberate naughtiness appears','Seeks constant approval','Tantrums when blocked','More assertive and stubborn'],
+    skills: [
+      {id:'lsk7-1', icon:'🚶', lbl:'Walks independently'},
+      {id:'lsk7-2', icon:'🏗️', lbl:'Builds a tower of 2-3 blocks'},
+      {id:'lsk7-3', icon:'🥄', lbl:'Uses spoon with intention'},
+      {id:'lsk7-4', icon:'🧩', lbl:'Fits shapes into simple shape-sorter'},
+      {id:'lsk7-5', icon:'📚', lbl:'Turns book pages'},
+      {id:'lsk7-6', icon:'🗣️', lbl:'Says 3-10 words clearly'},
+      {id:'lsk7-7', icon:'👞', lbl:'Brings shoes to put on'},
+      {id:'lsk7-8', icon:'🎭', lbl:'Feeds doll or stuffed animal'},
+      {id:'lsk7-9', icon:'🔎', lbl:'Searches in correct place for hidden item'},
+      {id:'lsk7-10',icon:'🧹', lbl:'Helps with simple tasks (put toys away)'},
+      {id:'lsk7-11',icon:'😘', lbl:'Gives kisses and hugs on request'},
+      {id:'lsk7-12',icon:'🙌', lbl:'Claps for own accomplishments'},
+      {id:'lsk7-13',icon:'🎵', lbl:'Sings parts of familiar songs'},
+      {id:'lsk7-14',icon:'🏃', lbl:'Climbs stairs (all fours)'},
+      {id:'lsk7-15',icon:'🧸', lbl:'Shows comfort object to others'},
+      {id:'lsk7-16',icon:'⬛', lbl:'Scribbles intentionally with crayon'},
+    ]
+  },
+  {
+    n: 8, name: 'The World of Programs', emoji: '🧩', colorClass: 'lc8', badgeClass: 'lb8',
+    stormWeek: 55, sunWeek: 59, endWeek: 64,
+    desc: 'Baby can now create flexible programs for reaching goals — like a little manager.',
+    signals: ['Demands everything on their terms','Tantrums intensify','Extremely clingy','Sleep becomes difficult again','Very jealous','Gets frustrated with failure'],
+    skills: [
+      {id:'lsk8-1', icon:'🗣️', lbl:'Vocabulary of 10-20 words'},
+      {id:'lsk8-2', icon:'👫', lbl:'Plays WITH other children (not just beside)'},
+      {id:'lsk8-3', icon:'🎭', lbl:'Engages in complex pretend play'},
+      {id:'lsk8-4', icon:'🏗️', lbl:'Stacks 4-6 blocks'},
+      {id:'lsk8-5', icon:'🧩', lbl:'Completes 2-piece puzzles'},
+      {id:'lsk8-6', icon:'🖌️', lbl:'Draws with purpose (a circle)'},
+      {id:'lsk8-7', icon:'👟', lbl:'Tries to put on own shoes'},
+      {id:'lsk8-8', icon:'🏃', lbl:'Runs with confidence'},
+      {id:'lsk8-9', icon:'⬆️', lbl:'Climbs up and down stairs'},
+      {id:'lsk8-10',icon:'🧹', lbl:'Helps sort laundry or tidy up'},
+      {id:'lsk8-11',icon:'🥣', lbl:'Feeds self with spoon reliably'},
+      {id:'lsk8-12',icon:'😅', lbl:'Shows understanding of consequences'},
+      {id:'lsk8-13',icon:'💬', lbl:'Two-word combinations ("more milk")'},
+      {id:'lsk8-14',icon:'🎵', lbl:'Sings entire simple songs'},
+      {id:'lsk8-15',icon:'😊', lbl:'Comforts upset friends or siblings'},
+      {id:'lsk8-16',icon:'💪', lbl:'Jumps off low surfaces'},
+    ]
+  },
+  {
+    n: 9, name: 'The World of Principles', emoji: '⚖️', colorClass: 'lc9', badgeClass: 'lb9',
+    stormWeek: 64, sunWeek: 69, endWeek: 75,
+    desc: 'Toddler grasps flexible principles that can be applied across many situations.',
+    signals: ['Tests every rule repeatedly','Very emotional','Extreme mood swings','Picky eating','Refuses to cooperate','Wants to decide everything'],
+    skills: [
+      {id:'lsk9-1', icon:'⚖️', lbl:'Understands fair and unfair'},
+      {id:'lsk9-2', icon:'🎨', lbl:'Names colours correctly'},
+      {id:'lsk9-3', icon:'🔢', lbl:'Counts to 3 or more'},
+      {id:'lsk9-4', icon:'🧩', lbl:'Sorts objects by type (cars in one pile)'},
+      {id:'lsk9-5', icon:'🎭', lbl:'Pretend play with narrative (making a meal)'},
+      {id:'lsk9-6', icon:'🗣️', lbl:'Speaks in 3-word sentences'},
+      {id:'lsk9-7', icon:'😔', lbl:'Shows genuine remorse for hurting others'},
+      {id:'lsk9-8', icon:'🤝', lbl:'Shares toys (sometimes!)'},
+      {id:'lsk9-9', icon:'🧠', lbl:'Understands big vs small, heavy vs light'},
+      {id:'lsk9-10',icon:'📍', lbl:'Knows name and age'},
+      {id:'lsk9-11',icon:'🌍', lbl:'Understands day/night, morning/night'},
+      {id:'lsk9-12',icon:'👟', lbl:'Dresses self (with help)'},
+      {id:'lsk9-13',icon:'🏃', lbl:'Pedals tricycle'},
+      {id:'lsk9-14',icon:'✂️', lbl:'Cuts with child-safe scissors'},
+      {id:'lsk9-15',icon:'📖', lbl:'Recounts events in order'},
+    ]
+  },
+  {
+    n: 10, name: 'The World of Systems', emoji: '🌐', colorClass: 'lc10', badgeClass: 'lb10',
+    stormWeek: 75, sunWeek: 80, endWeek: 86,
+    desc: 'Child understands complex systems — physical, social, emotional — the leap that lasts a lifetime.',
+    signals: ['Asks "why" constantly','Challenges everything','Very difficult to please','Alternates between clingy and independent','Intense emotions','Strong opinions'],
+    skills: [
+      {id:'lsk10-1', icon:'🌐', lbl:'Understands their place in the family'},
+      {id:'lsk10-2', icon:'💬', lbl:'Speaks in full sentences (4-5 words)'},
+      {id:'lsk10-3', icon:'🎨', lbl:'Draws a person (head + body)'},
+      {id:'lsk10-4', icon:'🧠', lbl:'Understands others have feelings too'},
+      {id:'lsk10-5', icon:'📚', lbl:'Tells a short story with beginning/end'},
+      {id:'lsk10-6', icon:'🔢', lbl:'Counts to 10+'},
+      {id:'lsk10-7', icon:'⚽', lbl:'Kicks a ball with aim'},
+      {id:'lsk10-8', icon:'✂️', lbl:'Cuts along a line'},
+      {id:'lsk10-9', icon:'🎭', lbl:'Role plays elaborate scenarios'},
+      {id:'lsk10-10',icon:'🤔', lbl:'Reasons about simple cause and effect'},
+      {id:'lsk10-11',icon:'🏃', lbl:'Jumps, hops on one foot'},
+      {id:'lsk10-12',icon:'🤝', lbl:'Resolves conflicts with words (sometimes)'},
+      {id:'lsk10-13',icon:'🌟', lbl:'Shows strong sense of self and preferences'},
+      {id:'lsk10-14',icon:'📅', lbl:'Understands yesterday/today/tomorrow'},
+      {id:'lsk10-15',icon:'😊', lbl:'Empathizes deeply with others'},
+      {id:'lsk10-16',icon:'💪', lbl:'Self-regulates emotions (sometimes)'},
+    ]
+  },
 ];
 
 const TM={
@@ -861,6 +1313,7 @@ function loadLocal(){
   birthInfo   =lsGet('bb_birthInfo',{});
   medAlerts   =lsGet('bb_medAlerts',{});
   try{caregivers=JSON.parse(localStorage.getItem('bb_caregivers'))||caregivers;}catch{}
+  loadLeapData();
 }
 
 function startListen(){
@@ -876,6 +1329,8 @@ function startListen(){
     birthInfo   =d.birth||{};
     medAlerts   =d.medAlerts||{};
     if(d.caregivers)caregivers=d.caregivers;
+    if(d.leapSettings)leapSettings=d.leapSettings;
+    if(d.leapData)leapData=d.leapData;
     setSyncDot('live');
     renderAll();
   });
@@ -1335,6 +1790,7 @@ function showPg(id,btn){
   if(id==='motor'){renderMotorList();buildChecklist();}
   if(id==='hist')renderHistory();
   if(id==='info')renderInfoPage();
+  if(id==='leaps'){renderLeapsPage();checkLeapNotification();}
 }
 
 function clearToday(){if(!confirm("Clear today's log?"))return;const dk=tk();delete allEntries[dk];if(fbOK)window._remove(window._ref(window._db,'entries/'+dk)).catch(()=>{});else localStorage.setItem('bb_entries_v2',JSON.stringify(allEntries));renderToday();toast('🗑️ Today cleared');}
@@ -1343,12 +1799,311 @@ function clearAll(){if(!confirm('Delete ALL data? Cannot be undone.'))return;all
 function renderAll(){renderToday();renderHealthPage();renderMotorList();buildChecklist();renderHistory();renderGrowthList();renderInfoPage();updHeader();}
 
 setInterval(()=>{if(document.getElementById('pg-today').classList.contains('active'))renderToday();},60000);
+let leapSettings = {}; // {dueDate, bornDate, adjWeeks}
+let leapData = {};     // {discoveredSkills:{id:true}, signals:{leapN:{id:true}}, diary:[{leapN,note,date}]}
+let currentLeapAdj = 0;
+let activeDiaryLeap = 0;
+
+function loadLeapData() {
+  leapSettings = lsGet('bb_leapSettings', {});
+  leapData = lsGet('bb_leapData', {discoveredSkills:{}, signals:{}, diary:[]});
+  currentLeapAdj = leapSettings.adjWeeks || 0;
+}
+
+function saveLeapData() {
+  localStorage.setItem('bb_leapSettings', JSON.stringify(leapSettings));
+  localStorage.setItem('bb_leapData', JSON.stringify(leapData));
+  if (fbOK) {
+    window._set(window._ref(window._db,'leapSettings'), leapSettings).catch(()=>{});
+    window._set(window._ref(window._db,'leapData'), leapData).catch(()=>{});
+  }
+}
+
+function getRefDate() {
+  // Use due date if set, else birth date
+  const d = leapSettings.dueDate || leapSettings.bornDate;
+  return d ? new Date(d + 'T00:00:00') : null;
+}
+
+function getBabyAgeWeeks() {
+  const ref = getRefDate();
+  if (!ref) return null;
+  const now = new Date();
+  return Math.floor((now - ref) / (7 * 24 * 60 * 60 * 1000));
+}
+
+function getLeapStatus(leap) {
+  const ageW = getBabyAgeWeeks();
+  if (ageW === null) return 'unknown';
+  const adj = leapSettings.adjWeeks || 0;
+  const storm = leap.stormWeek + adj;
+  const sun   = leap.sunWeek   + adj;
+  const end   = leap.endWeek   + adj;
+  if (ageW < storm - 1) return 'upcoming';
+  if (ageW >= storm - 1 && ageW < storm) return 'approaching';
+  if (ageW >= storm && ageW < sun) return 'stormy';
+  if (ageW >= sun && ageW < end) return 'sunny';
+  return 'complete';
+}
+
+function getCurrentLeap() {
+  const ageW = getBabyAgeWeeks();
+  if (ageW === null) return null;
+  const adj = leapSettings.adjWeeks || 0;
+  // Find the leap the baby is currently in (stormy or sunny)
+  for (const l of LEAPS) {
+    const storm = l.stormWeek + adj;
+    const end   = l.endWeek   + adj;
+    if (ageW >= storm - 1 && ageW < end) return l;
+  }
+  // Between leaps — find next upcoming
+  for (const l of LEAPS) {
+    const storm = l.stormWeek + adj;
+    if (ageW < storm - 1) return l;
+  }
+  return null;
+}
+
+function saveLeapSetup() {
+  const due  = document.getElementById('ls-due').value;
+  const born = document.getElementById('ls-born').value;
+  if (!due && !born) { toast('Enter at least one date'); return; }
+  leapSettings = { dueDate: due||born, bornDate: born||due, adjWeeks: 0 };
+  saveLeapData();
+  closeM('m-leap-setup');
+  renderLeapsPage();
+  checkLeapNotification();
+  toast('🌀 Leaps schedule ready!');
+}
+
+function adjLeap(delta) {
+  currentLeapAdj = Math.max(-4, Math.min(4, currentLeapAdj + delta));
+  document.getElementById('adj-display').textContent = (currentLeapAdj >= 0 ? '+' : '') + currentLeapAdj + ' wk';
+}
+
+function saveLeapAdj() {
+  leapSettings.adjWeeks = currentLeapAdj;
+  saveLeapData();
+  closeM('m-leap-adjust');
+  renderLeapsPage();
+  toast('✅ Schedule adjusted!');
+}
+
+function openLeapAdjust() {
+  currentLeapAdj = leapSettings.adjWeeks || 0;
+  document.getElementById('adj-display').textContent = (currentLeapAdj >= 0 ? '+' : '') + currentLeapAdj + ' wk';
+  openM('m-leap-adjust');
+}
+
+function toggleLeapCard(n) {
+  const card = document.getElementById('leap-card-' + n);
+  if (!card) return;
+  card.classList.toggle('open');
+}
+
+function toggleSignal(leapN, sigIdx) {
+  if (!leapData.signals[leapN]) leapData.signals[leapN] = {};
+  const k = 'sig' + sigIdx;
+  leapData.signals[leapN][k] = !leapData.signals[leapN][k];
+  saveLeapData();
+  // Update UI
+  const el = document.getElementById('sig-' + leapN + '-' + sigIdx);
+  if (el) {
+    el.classList.toggle('on', leapData.signals[leapN][k]);
+    el.textContent = leapData.signals[leapN][k] ? '✓' : '';
+  }
+}
+
+function toggleSkill(skillId) {
+  const d = leapData.discoveredSkills;
+  d[skillId] = !d[skillId];
+  saveLeapData();
+  const el = document.getElementById('skill-' + skillId);
+  if (el) el.classList.toggle('discovered', d[skillId]);
+}
+
+function openLeapDiary(leapN) {
+  activeDiaryLeap = leapN;
+  const leap = LEAPS.find(l => l.n === leapN);
+  document.getElementById('m-leap-diary-title').textContent = `📔 Leap ${leapN} Diary`;
+  document.getElementById('ld-date').value = tk();
+  document.getElementById('ld-note').value = '';
+  openM('m-leap-diary');
+}
+
+function saveLeapDiary() {
+  const note = document.getElementById('ld-note').value.trim();
+  const date = document.getElementById('ld-date').value;
+  if (!note) { toast('Write something first'); return; }
+  if (!leapData.diary) leapData.diary = [];
+  leapData.diary.unshift({ leapN: activeDiaryLeap, note, date });
+  saveLeapData();
+  closeM('m-leap-diary');
+  renderLeapsPage();
+  toast('📔 Diary entry saved!');
+}
+
+function checkLeapNotification() {
+  if (!getRefDate()) return;
+  const lastShown = localStorage.getItem('bb_leapNotifShown');
+  const now = Date.now();
+  const oneWeek = 7 * 24 * 60 * 60 * 1000;
+  if (lastShown && (now - parseInt(lastShown)) < oneWeek) return; // once per week max
+
+  const ageW = getBabyAgeWeeks();
+  const adj = leapSettings.adjWeeks || 0;
+  for (const leap of LEAPS) {
+    const daysUntilStorm = ((leap.stormWeek + adj) * 7) - (ageW * 7);
+    if (daysUntilStorm >= 0 && daysUntilStorm <= 7) {
+      // Leap starts within 7 days!
+      showLeapNotification(leap, Math.round(daysUntilStorm));
+      localStorage.setItem('bb_leapNotifShown', now.toString());
+      return;
+    }
+  }
+}
+
+function showLeapNotification(leap, daysAway) {
+  const banner = document.getElementById('leaps-notify-banner');
+  if (!banner) return;
+  const msg = daysAway === 0 ? 'starting now' : `starting in about ${daysAway} day${daysAway !== 1 ? 's' : ''}`;
+  banner.style.display = 'block';
+  banner.innerHTML = `
+    <div class="leap-notify-card">
+      <div class="leap-notify-icon">${leap.emoji}</div>
+      <div>
+        <div class="leap-notify-title">Leap ${leap.n} is ${msg}!</div>
+        <div class="leap-notify-sub"><strong>${leap.name}</strong> — expect more fussiness, clinginess, and big learning bursts ahead.</div>
+        <div class="leap-notify-dismiss" onclick="document.getElementById('leaps-notify-banner').style.display='none'">Dismiss</div>
+      </div>
+    </div>`;
+}
+
+function renderLeapsPage() {
+  if (!getRefDate()) {
+    document.getElementById('leaps-setup-banner').style.display = 'block';
+    document.getElementById('leaps-hero').style.display = 'none';
+    document.getElementById('leaps-tl-label').style.display = 'none';
+    document.getElementById('leaps-adjust-row').style.display = 'none';
+    document.getElementById('leaps-timeline').innerHTML = '';
+    return;
+  }
+  document.getElementById('leaps-setup-banner').style.display = 'none';
+  document.getElementById('leaps-tl-label').style.display = 'block';
+  document.getElementById('leaps-adjust-row').style.display = 'flex';
+
+  const ageW = getBabyAgeWeeks();
+  const adj = leapSettings.adjWeeks || 0;
+  const currentLeap = getCurrentLeap();
+
+  // Hero card
+  const hero = document.getElementById('leaps-hero');
+  hero.style.display = 'block';
+  if (currentLeap) {
+    const status = getLeapStatus(currentLeap);
+    const storm = currentLeap.stormWeek + adj;
+    const end   = currentLeap.endWeek   + adj;
+    const totalDur = end - storm;
+    const progress = Math.min(100, Math.max(0, Math.round(((ageW - storm) / totalDur) * 100)));
+    const statusLabels = {stormy:'😤 Stormy Phase', sunny:'☀️ Sunny Phase', upcoming:`🔜 Coming in ${storm - ageW} week${storm - ageW !== 1 ? 's' : ''}`, approaching:'⚡ About to Begin!', complete:'✅ Complete'};
+    const statusChip = {stormy:'stormy', sunny:'sunny', upcoming:'upcoming', approaching:'stormy', complete:'between'};
+    hero.innerHTML = `
+      <div class="leap-hero">
+        <div class="leap-hero-label">CURRENT LEAP</div>
+        <div class="leap-hero-name">${currentLeap.emoji} Leap ${currentLeap.n}: ${currentLeap.name}</div>
+        <div class="leap-hero-week">Baby is ~${ageW} weeks old · Leap ${status === 'upcoming' || status === 'approaching' ? 'starts' : 'active'} at week ${storm}</div>
+        <div class="leap-progress-bar"><div class="leap-progress-fill" style="width:${progress}%;background:${status==='stormy'?'var(--rose)':'var(--sage)'}"></div></div>
+        <div class="leap-progress-label"><span>Week ${storm}</span><span>Week ${end}</span></div>
+        <div class="leap-status-chip ${statusChip[status]||'between'}">${statusLabels[status]||status}</div>
+      </div>`;
+  } else {
+    hero.innerHTML = `<div class="leap-hero"><div class="leap-hero-label">LEAPS STATUS</div><div class="leap-hero-name">🎉 All 10 Leaps Complete!</div><div class="leap-hero-week">Baby is ~${ageW} weeks old — what an incredible journey!</div></div>`;
+  }
+
+  // Timeline
+  const tl = document.getElementById('leaps-timeline');
+  tl.innerHTML = LEAPS.map(leap => {
+    const status = getLeapStatus(leap);
+    const storm  = leap.stormWeek + adj;
+    const sun    = leap.sunWeek + adj;
+    const end    = leap.endWeek + adj;
+    const isOpen = document.getElementById('leap-card-' + leap.n)?.classList.contains('open');
+    const dSkills = Object.keys(leapData.discoveredSkills).filter(k => leapData.discoveredSkills[k] && k.startsWith('lsk' + leap.n + '-'));
+    const totalSkills = leap.skills.length;
+    const diaryEntries = (leapData.diary || []).filter(d => d.leapN === leap.n);
+    const sigs = leapData.signals[leap.n] || {};
+    const sigCount = Object.values(sigs).filter(Boolean).length;
+
+    const statusBadge = {
+      upcoming:   {text:'Upcoming',   style:'background:#f0f0f0;color:#999;'},
+      approaching:{text:'Starting!',  style:'background:#fff3cd;color:#856404;'},
+      stormy:     {text:'Stormy ☁️',  style:'background:#fdeef1;color:var(--rose);'},
+      sunny:      {text:'Sunny ☀️',   style:'background:var(--sage-lt);color:#2e6e4e;'},
+      complete:   {text:'Done ✓',     style:'background:var(--sage-lt);color:#2e6e4e;opacity:.8'},
+    }[status] || {text:status, style:''};
+
+    return `
+    <div class="leap-card ${status === 'stormy' || status === 'approaching' ? 'active' : ''} ${status === 'complete' ? 'complete' : ''} ${isOpen ? 'open' : ''}" id="leap-card-${leap.n}">
+      <div class="leap-card-hdr" onclick="toggleLeapCard(${leap.n})">
+        <div class="leap-card-dot ${leap.colorClass}">${leap.n}</div>
+        <div class="leap-card-info">
+          <div class="leap-card-name">${leap.emoji} ${leap.name}</div>
+          <div class="leap-card-week">Wk ${storm}–${end} · ${dSkills.length}/${totalSkills} skills · ${diaryEntries.length} diary notes</div>
+        </div>
+        <div class="leap-card-badge ${leap.badgeClass}" style="${statusBadge.style}">${statusBadge.text}</div>
+        <div class="leap-card-chevron">▾</div>
+      </div>
+      <div class="leap-card-body">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${leap.desc}</div>
+
+        <div class="skills-section-title">⚡ SIGNALS — Is Your Baby in This Leap?</div>
+        <div class="signals-list">
+          ${leap.signals.map((s, i) => `
+            <div class="signal-item">
+              <div class="signal-check ${sigs['sig'+i]?'on':''}" id="sig-${leap.n}-${i}" onclick="toggleSignal(${leap.n},${i})">${sigs['sig'+i]?'✓':''}</div>
+              <div>${s}</div>
+            </div>`).join('')}
+        </div>
+        ${sigCount >= 3 ? `<div style="font-size:11px;color:var(--rose);font-weight:700;margin-bottom:8px;">🎯 ${sigCount} signals spotted — likely in this leap!</div>` : ''}
+
+        <div class="skills-section">
+          <div class="skills-section-title">🌟 NEW SKILLS TO DISCOVER (${dSkills.length}/${totalSkills})</div>
+          <div class="skill-grid">
+            ${leap.skills.map(sk => `
+              <div class="skill-chip ${leapData.discoveredSkills[sk.id]?'discovered':''}" id="skill-${sk.id}" onclick="toggleSkill('${sk.id}')">
+                <span class="sk-icon">${sk.icon}</span><span>${sk.lbl}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <div class="diary-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;margin-bottom:7px;">
+            <div class="skills-section-title" style="margin:0;">📔 LEAP DIARY</div>
+            <button class="btn btn-s" onclick="openLeapDiary(${leap.n})" style="font-size:11px;padding:5px 10px;">+ Add Note</button>
+          </div>
+          ${diaryEntries.length ? diaryEntries.slice(0, 3).map(e => `
+            <div class="diary-entry-item">
+              <div class="diary-entry-date">${e.date || 'No date'}</div>
+              <div>${e.note}</div>
+            </div>`).join('') : `<div style="font-size:12px;color:var(--text3);padding:4px 0;">No diary notes yet. Tap + Add Note to record a skill or memory.</div>`}
+          ${diaryEntries.length > 3 ? `<div style="font-size:11px;color:var(--text3);margin-top:4px;">+ ${diaryEntries.length - 3} more entries</div>` : ''}
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn btn-s" onclick="openLeapAdjust()" style="font-size:11px;padding:6px 10px;width:100%;">⚙️ Adjust Leap Timing</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 // ══════════════════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════════════════
 document.addEventListener('fb-ready',()=>{fbOK=true;});
+loadLeapData();
 initLock();
+setTimeout(()=>{ if(getRefDate()) checkLeapNotification(); }, 3500);
 </script>
 </body>
 </html>
