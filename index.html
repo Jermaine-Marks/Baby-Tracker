@@ -9,6 +9,24 @@
 <meta name="theme-color" content="#fdf6f0">
 <title>Baby Book</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ── EmailJS config ──────────────────────────────────────────
+  // 1. Go to https://www.emailjs.com and create a FREE account
+  // 2. Add an Email Service (Gmail, Yahoo, Outlook, etc.)
+  // 3. Create an Email Template with these variables:
+  //      {{reset_link}}  {{to_email}}  {{app_name}}
+  // 4. Replace the three values below with your IDs
+  const EJS_PUBLIC_KEY  = 'WkJdtyYS0dAmst26c';   // Account → API Keys
+  const EJS_SERVICE_ID  = 'service_ziz4cc7';   // Email Services tab
+  const EJS_TEMPLATE_ID = 'template_ot91xjb';  // Email Templates tab
+  const RESET_EMAIL     = 'toranmarks@yahoo.com';
+  window.addEventListener('load', () => {
+    if (EJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+      emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+    }
+  });
+</script>
 
 <!-- ╔══════════════════════════════════════════════════════╗
      ║  FIREBASE CONFIG — replace with your project values  ║
@@ -70,6 +88,16 @@ html,body{height:100%;overflow:hidden;background:var(--cream);color:var(--text);
 .lock-err{color:var(--rose);font-size:13px;font-weight:600;min-height:20px;margin-top:8px;}
 .lock-hint{font-size:12px;color:var(--text4);margin-top:14px;}
 .lock-setup-btn{margin-top:10px;background:none;border:1.5px solid var(--border2);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.lock-forgot{margin-top:14px;font-size:12px;color:var(--rose);font-weight:600;cursor:pointer;text-decoration:underline;display:none;}
+.lock-attempts{font-size:11px;color:var(--text3);margin-top:6px;min-height:16px;}
+/* RESET OVERLAY */
+#reset-scr{position:fixed;inset:0;background:var(--cream);z-index:400;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;}
+.reset-icon{font-size:52px;margin-bottom:14px;}
+.reset-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.reset-sub{font-size:13px;color:var(--text3);margin-bottom:22px;line-height:1.6;max-width:300px;}
+.reset-sent-box{background:var(--sage-lt);border:1.5px solid #b2dfc9;border-radius:var(--r-md);padding:14px 18px;font-size:13px;color:#2e6e4e;font-weight:600;margin-bottom:18px;display:none;line-height:1.5;}
+.reset-err-box{background:var(--rose-lt);border:1.5px solid var(--rose-mid);border-radius:var(--r-md);padding:14px 18px;font-size:13px;color:var(--rose);font-weight:600;margin-bottom:18px;display:none;line-height:1.5;}
+.reset-back{font-size:13px;color:var(--text3);cursor:pointer;margin-top:10px;font-weight:600;}
 
 /* CG SCREEN */
 #cg-scr{position:fixed;inset:0;background:var(--cream);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;}
@@ -327,8 +355,21 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
     <div class="lk zero" onclick="lk('0')">0</div><div class="lk del" onclick="lkb()">⌫</div>
   </div>
   <div class="lock-err" id="lerr"></div>
+  <div class="lock-attempts" id="lattempts"></div>
   <div class="lock-hint" id="lhint"></div>
   <button class="lock-setup-btn" id="lsetupbtn" onclick="startSetup()" style="display:none;">Set up PIN</button>
+  <div class="lock-forgot" id="lforgot" onclick="showForgotPin()">Forgot PIN? Send reset email</div>
+</div>
+
+<!-- ══ RESET SCREEN ══ -->
+<div id="reset-scr">
+  <div class="reset-icon">📧</div>
+  <div class="reset-title">Reset Your PIN</div>
+  <div class="reset-sub" id="reset-sub">A reset link will be sent to <strong>toranmarks@yahoo.com</strong>. Click the link to set a new PIN.</div>
+  <div class="reset-sent-box" id="reset-sent">✅ Email sent! Check your inbox at toranmarks@yahoo.com and click the reset link.</div>
+  <div class="reset-err-box" id="reset-err"></div>
+  <button class="btn btn-p" id="reset-send-btn" onclick="sendResetEmail()" style="max-width:280px;width:100%;">📧 Send Reset Email</button>
+  <div class="reset-back" onclick="hideResetScr()">← Back to PIN entry</div>
 </div>
 
 <!-- ══ CAREGIVER SCREEN ══ -->
@@ -645,6 +686,8 @@ textarea.ifield{resize:none;min-height:72px;line-height:1.5;}
 const PKEY = 'bb_pin'; // legacy / global PIN key
 const DAD_NAME = 'Dad'; // the admin caregiver name
 let pinBuf = '', pinMode = 'unlock', pinFirst = '', sessionKey = '';
+let failedAttempts = 0;
+const MAX_ATTEMPTS = 5;
 
 function pinKeyFor(name) {
   // returns the localStorage key for a given caregiver's PIN
@@ -828,11 +871,30 @@ async function procPin() {
   const stored = getActivePin(pendingCG); // check per-CG or global
   if (pinMode==='unlock') {
     if (await sha(pinBuf)===stored) {
+      // Success — reset counters
+      failedAttempts = 0;
+      localStorage.removeItem('bb_failedAttempts');
       sessionKey=pinBuf; pinBuf=''; updDots();
       document.getElementById('lock').style.display='none';
+      document.getElementById('lattempts').textContent = '';
+      document.getElementById('lforgot').style.display = 'none';
       if (pendingCG) { caregiver=pendingCG; localStorage.setItem('bb_cg',pendingCG); pendingCG=''; launch(); }
       else showCgScr();
-    } else { pinBuf=''; updDots(); document.getElementById('lerr').textContent='Incorrect PIN. Try again.'; }
+    } else {
+      pinBuf=''; updDots();
+      failedAttempts++;
+      localStorage.setItem('bb_failedAttempts', failedAttempts);
+      const remaining = MAX_ATTEMPTS - failedAttempts;
+      if (failedAttempts >= MAX_ATTEMPTS) {
+        document.getElementById('lerr').textContent = 'Too many failed attempts.';
+        document.getElementById('lattempts').textContent = '';
+        document.getElementById('lforgot').style.display = 'block';
+      } else {
+        document.getElementById('lerr').textContent = 'Incorrect PIN. Try again.';
+        document.getElementById('lattempts').textContent = `${remaining} attempt${remaining!==1?'s':''} left before reset option appears`;
+        if (failedAttempts >= 3) document.getElementById('lforgot').style.display = 'block';
+      }
+    }
   } else if (pinMode==='setup1'||pinMode==='chg1') {
     pinFirst=pinBuf; pinBuf=''; updDots();
     document.getElementById('lsub').textContent='Enter PIN again to confirm';
@@ -840,8 +902,12 @@ async function procPin() {
   } else if (pinMode==='setup2'||pinMode==='chg2') {
     if (pinBuf===pinFirst) {
       const h=await sha(pinBuf); localStorage.setItem(PKEY,h);
+      failedAttempts = 0;
+      localStorage.removeItem('bb_failedAttempts');
       sessionKey=pinBuf; pinBuf=''; updDots();
       document.getElementById('lock').style.display='none';
+      document.getElementById('lforgot').style.display = 'none';
+      document.getElementById('lattempts').textContent = '';
       if (pinMode==='chg2') { document.getElementById('app').style.display='flex'; renderAll(); }
       else showCgScr();
     } else {
@@ -863,12 +929,122 @@ function changePin() {
 }
 
 function initLock() {
+  // Restore failed attempt count across page reloads
+  failedAttempts = parseInt(localStorage.getItem('bb_failedAttempts') || '0');
+  if (failedAttempts >= 3 && localStorage.getItem(PKEY)) {
+    document.getElementById('lforgot').style.display = 'block';
+  }
+  if (failedAttempts >= MAX_ATTEMPTS && localStorage.getItem(PKEY)) {
+    document.getElementById('lattempts').textContent = '';
+    document.getElementById('lerr').textContent = 'Too many failed attempts.';
+  }
   if (!localStorage.getItem(PKEY)) {
     pinMode='setup1';
     document.getElementById('ltitle').textContent='Welcome to Baby Book';
     document.getElementById('lsub').textContent="Set a 4-digit PIN to protect your baby's information";
     document.getElementById('lhint').textContent='Your PIN encrypts sensitive data like SSN';
   }
+  // Check for reset token in URL
+  checkResetToken();
+}
+
+// ── RESET TOKEN HELPERS ────────────────────────────────────
+function genToken() {
+  const arr = new Uint8Array(24);
+  crypto.getRandomValues(arr);
+  return [...arr].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+function showForgotPin() {
+  document.getElementById('lock').style.display = 'none';
+  document.getElementById('reset-scr').style.display = 'flex';
+  document.getElementById('reset-sent').style.display = 'none';
+  document.getElementById('reset-err').style.display = 'none';
+  document.getElementById('reset-send-btn').style.display = 'flex';
+  document.getElementById('reset-sub').style.display = 'block';
+}
+
+function hideResetScr() {
+  document.getElementById('reset-scr').style.display = 'none';
+  document.getElementById('lock').style.display = 'flex';
+}
+
+async function sendResetEmail() {
+  const btn = document.getElementById('reset-send-btn');
+  const errBox = document.getElementById('reset-err');
+  const sentBox = document.getElementById('reset-sent');
+  errBox.style.display = 'none';
+
+  // Check EmailJS is configured
+  if (EJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
+    // Fallback: show manual reset instructions if EmailJS not configured
+    errBox.textContent = '⚠️ Email service not configured yet. To reset manually: open browser console (F12) and run: localStorage.removeItem("bb_pin"); location.reload();';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = '⏳ Sending…';
+  btn.disabled = true;
+
+  // Generate a secure token valid for 1 hour
+  const token = genToken();
+  const expiry = Date.now() + (60 * 60 * 1000); // 1 hour
+  localStorage.setItem('bb_resetToken', JSON.stringify({ token, expiry }));
+
+  // Build reset link using current page URL
+  const resetLink = `${location.origin}${location.pathname}?reset=${token}`;
+
+  try {
+    await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+      to_email: RESET_EMAIL,
+      app_name: "Baby's Book",
+      reset_link: resetLink,
+      expiry_time: '1 hour',
+    });
+    sentBox.style.display = 'block';
+    btn.style.display = 'none';
+    document.getElementById('reset-sub').style.display = 'none';
+  } catch (err) {
+    errBox.textContent = '❌ Could not send email. Check your EmailJS configuration. Error: ' + (err.text || err.message || err);
+    errBox.style.display = 'block';
+    btn.textContent = '📧 Send Reset Email';
+    btn.disabled = false;
+  }
+}
+
+function checkResetToken() {
+  const params = new URLSearchParams(location.search);
+  const urlToken = params.get('reset');
+  if (!urlToken) return;
+
+  // Clean URL immediately
+  history.replaceState({}, '', location.pathname);
+
+  const stored = JSON.parse(localStorage.getItem('bb_resetToken') || 'null');
+  if (!stored) { showResetError('Reset link is invalid or has already been used.'); return; }
+  if (Date.now() > stored.expiry) { showResetError('Reset link has expired. Please request a new one.'); localStorage.removeItem('bb_resetToken'); return; }
+  if (urlToken !== stored.token) { showResetError('Reset link is invalid.'); return; }
+
+  // Valid token — clear it and let user set a new PIN
+  localStorage.removeItem('bb_resetToken');
+  localStorage.removeItem('bb_pin');
+  localStorage.removeItem('bb_failedAttempts');
+  failedAttempts = 0;
+
+  // Show lock screen in setup mode
+  document.getElementById('lock').style.display = 'flex';
+  document.getElementById('ltitle').textContent = '🔓 Reset PIN';
+  document.getElementById('lsub').textContent = 'Enter a new 4-digit PIN';
+  document.getElementById('lerr').textContent = '';
+  document.getElementById('lhint').textContent = 'Your link was verified successfully';
+  document.getElementById('lforgot').style.display = 'none';
+  document.getElementById('lattempts').textContent = '';
+  pinMode = 'setup1'; pinBuf = ''; updDots();
+}
+
+function showResetError(msg) {
+  document.getElementById('lock').style.display = 'flex';
+  document.getElementById('lerr').textContent = '⚠️ ' + msg;
 }
 
 // ══════════════════════════════════════════════════
